@@ -1,5 +1,7 @@
 // 启动页面
+
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/router/index.dart';
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -16,16 +18,14 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _animationController = AnimationController(vsync: this,duration: Duration(milliseconds: 2000));
     _animation = Tween(begin: 1.0,end: 1.0).animate(_animationController);
     _animation.addStatusListener((status){
-      if(status == AnimationStatus.completed){
-        
-        Navigator.of(context).pushNamed('/home');
+      if(status == AnimationStatus.completed){ 
+        Router.push("/index",context);
       }
     });
     _animationController.forward();
   }
   @override
   void dispose() {
-    _animationController.dispose();
     super.dispose();
   }
   @override
@@ -58,7 +58,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                 ),
                 child: Text("跳过"),
                 onPressed: (){
-                  _animationController.dispose();
+                  dispose();
                 },
               ),
             )

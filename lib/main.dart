@@ -1,39 +1,93 @@
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/page/splash.dart';
-import 'package:flutter_shop/router/routes.dart';
-import 'package:flutter_shop/router/application.dart';
-void main() => runApp(MyApp());
+import 'package:flutter_shop/router/index.dart';
+import 'package:flutter_shop/utils/cache.dart';
+//import 'package:flutter_shop/page/splash.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_shop/utils/rem.dart';
+import 'package:provider/provider.dart';
+
+import 'model/index.dart';
+//import 'package:provider/provider.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var sq = await SpUtil.getInstance();
+  var token = sq.getString('token');
+  var userName = sq.getString('userName');
+  var image = sq.getString('userImg');
+  runApp(MyApp(token, userName,image));
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
-  MyApp() {
-    final router = Router();
-    Routes.configureRoutes(router);
-    Application.router = router;
-  }
-  
+  MyApp(this.token, this.userName,this.image);
+
+  final String token;
+
+  final String userName;
+
+  final String image;
   
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '行星咖啡',
-      debugShowCheckedModeBanner: false,
-      onGenerateRoute: Application.router.generator,
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+   Rem.setDesignWidth(750.0);
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(builder: (_) => Model(token, userName,image)),
+      ],
+      child: Consumer<Model>(
+        builder: (context, model, widget) {
+          return RestartWidget(
+            child: MaterialApp(
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(backgroundColor: Colors.transparent),
+              // 监听路由跳转
+              onGenerateRoute: (RouteSettings settings) {
+                return Router.run(settings);
+              },
+              home: Scaffold(
+                resizeToAvoidBottomPadding: false,
+                body: SplashScreen(),
+              ),
+            ),
+          );
+        },
       ),
-      home: SplashScreen()
     );
   }
 }
 
+class RestartWidget extends StatefulWidget {
+  final Widget child;
+
+  RestartWidget({Key key, @required this.child})
+      : assert(child != null),
+        super(key: key);
+
+  static restartApp(BuildContext context) {
+    final _RestartWidgetState state =
+        context.ancestorStateOfType(const TypeMatcher<_RestartWidgetState>());
+    state.restartApp();
+  }
+
+  @override
+  _RestartWidgetState createState() => _RestartWidgetState();
+}
+
+class _RestartWidgetState extends State<RestartWidget> {
+  Key key = UniqueKey();
+
+  void restartApp() {
+    setState(() {
+      key = UniqueKey();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      key: key,
+      child: widget.child,
+    );
+  }
+}
