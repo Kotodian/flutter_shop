@@ -1,10 +1,11 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
+import 'package:flutter_shop/config/web.config.dart';
 import 'package:flutter_shop/utils/httpUtils.dart';
 
 Future uploadImage(File file,String token) async {
 
+  var url = webApi['cusUpload'];
   String path = file.path;
   var name = path.substring(path.lastIndexOf("/") + 1,path.length);
   var suffix = name.substring(name.lastIndexOf(".") + 1, name.length);
@@ -16,6 +17,6 @@ Future uploadImage(File file,String token) async {
     "headerImg": image
   });
 
-  var respone = await HttpUtil().postToken("/cus/upload",token,data: formData);
+  var respone = await HttpUtil().postToken(url,token,data: formData);
   return respone;
 }

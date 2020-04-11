@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/page/customer/mine.dart';
 import 'package:flutter_shop/page/home.dart';
+import 'package:flutter_shop/page/sort/index.dart';
 import 'package:flutter_shop/widget/bottom_widget.dart';
 class Home extends StatefulWidget {
   @override
@@ -41,9 +42,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         controller: tabController,
         children: <Widget>[
           HomePage(),
-          Container(
-            color: colors[1]
-          ),
+          Sort(),
           Container(
             color: colors[2]
           ),

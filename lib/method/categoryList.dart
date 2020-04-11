@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:dio/dio.dart';
 import 'package:flutter_shop/config/web.config.dart';
 import 'package:flutter_shop/utils/httpUtils.dart';
 
@@ -15,4 +14,45 @@ Future getCategoryList() async {
   } catch (e) {
     print(e);
   }
+}
+
+Future getCoffeeList(int page, int pagesize,String code) async {
+  try {
+    var url = webApi['coffeeList'];
+    var data = {
+      "PageInfo":{
+        "page":page,
+        "pageSize":pagesize
+      },
+      "code": code
+    };
+    var response = await HttpUtil().post(url,data: jsonEncode(data));
+    return response;
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future getCoffeeType(String code) async {
+  try {
+    var url = webApi['coffeeType'];
+    var data = {
+      "code": code
+    };
+    var response = await HttpUtil().post(url,data: jsonEncode(data));
+    return response;
+  } catch (e) {
+    print(e);
+  }
+}
+Future getCoffeeByUUID(String uuid) async {
+    try {
+      var url = webApi['coffeeDetail'];
+      var data = {
+        "uuid": uuid
+      };
+      var response = await HttpUtil().post(url,data: jsonEncode(data));
+      return response;
+    } catch (e) {
+    }
 }

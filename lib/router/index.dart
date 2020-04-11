@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/page/customer/mine.dart';
+import 'package:flutter_shop/page/goodsDetail/index.dart';
 import 'package:flutter_shop/page/home.dart';
 import 'package:flutter_shop/page/index.dart';
 import 'package:flutter_shop/router/404.dart';
@@ -13,7 +14,8 @@ class Router {
     '/index': (context,{arguments}) => Home(),
     '/home': (context,{arguments}) => HomePage(),
     '/login': (context,{arguments}) => Login(),
-    '/mine': (context, {arguments}) => Mine()
+    '/mine': (context, {arguments}) => Mine(),
+    '/coffeeDetail': (context, {arguments}) => GoodsDetail()
   };
 
   static run(RouteSettings settings) {
