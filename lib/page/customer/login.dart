@@ -28,6 +28,7 @@ class _Login extends State<Login> {
     sq.putString('token', data['data']['token']);
     sq.putString('userName', data['data']['user']['username']);
     sq.putString('userImg', data['data']['user']['image']);
+    sq.putString('userId', data['data']['user']['uuid']);
     model.setToken(data['data']['token']);
     model.setUserName(data['data']['user']['nickname']);
     model.setImage(data['data']['user']['image']);

@@ -15,7 +15,7 @@ class Router {
     '/home': (context,{arguments}) => HomePage(),
     '/login': (context,{arguments}) => Login(),
     '/mine': (context, {arguments}) => Mine(),
-    '/coffeeDetail': (context, {arguments}) => GoodsDetail()
+    '/coffeeDetail': (context, {arguments}) => GoodsDetail(arguments: arguments)
   };
 
   static run(RouteSettings settings) {

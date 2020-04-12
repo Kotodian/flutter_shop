@@ -1,5 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/page/cart/index.dart';
 import 'package:flutter_shop/page/customer/mine.dart';
 import 'package:flutter_shop/page/home.dart';
 import 'package:flutter_shop/page/sort/index.dart';
@@ -32,7 +33,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         initialIndex: currentIndex,
         items:bottomNavigationBar,
         onTap: (index) {
-          setState(() {
+          this.setState(() {
             currentIndex = index;
           });
           tabController.animateTo(index, duration: Duration(milliseconds: 300),curve: Curves.ease);
@@ -46,9 +47,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
           Container(
             color: colors[2]
           ),
-          Container(
-            color: colors[3]
-          ),
+          CartPage(),
           Mine()
         ]),
     );

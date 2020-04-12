@@ -59,6 +59,7 @@ class _Sort extends State<Sort> {
     var data = await getCoffeeList(1,999,code);
     setState(() {
       currentCategory = data['data']['coffeeList'];
+      print(currentCategory[0]['uuid']);
       isRequest = false;
     });
   }
@@ -154,7 +155,7 @@ class _Sort extends State<Sort> {
                       widget,
                       '/coffeeDetail',
                       context,
-                      {'id': currentCategory[index]['uuid']},
+                      {'uuid': currentCategory[index]['uuid']},
                     );
                   },
                   childCount: currentCategory.length,

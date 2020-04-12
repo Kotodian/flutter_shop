@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     getCategoryList().then((data){
       var list = CoffeetypeList.fromJson(data['data']);
-      setState(() {
+      this.setState(() {
         categoryList = list.coffeetype;
         isLoading = false;
       });

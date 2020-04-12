@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/method/categoryList.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_shop/utils/rem.dart';
 import 'package:flutter_shop/utils/cache.dart';
-import 'package:flutter_shop/widget/bottomSheet_widget.dart';
 import 'package:flutter_shop/widget/SliverCustomHeader_widget.dart';
-import 'package:flutter_shop/widget/count.dart';
 import 'package:flutter_shop/router/index.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -26,7 +23,7 @@ class _GoodsDetail extends State<GoodsDetail> {
 
   int goodsCount = 0; //购物车商品数量
 
-  Map goodsMsgs;
+  var goodsMsgs;
 
   List chooseSizeIndex; // 当前所选的规格下标
 
@@ -52,45 +49,53 @@ class _GoodsDetail extends State<GoodsDetail> {
 
   getInitData() async {
     String id = widget.arguments['uuid'];
+    print(id);
     var sq = await SpUtil.getInstance();
     final token = sq.getString('token');
     List<Future> api = [
       getCoffeeByUUID(id)
     ];
-    if (token != null) {
-      // api.add(
-      //   Api.getCartMsg(token: token, id: id),
-      // );
-    }
+    // if (token != null) {
+    //   api.add(
+    //     Api.getCartMsg(token: token, id: id),
+    //   );
+    // }
     var data = await Future.wait(api);
-    var goodsMsg = data[0]['data'];
-    var cartData = token != null ? data[1].data : null;
 
-    var specificationList = goodsMsg['specificationList'];
-    List<int> sizeIndex = [];
-    List<String> sizeNameList = [];
-    List<int> sizeId = [];
-    for (var i = 0; i < specificationList.length; i++) {
-      if (specificationList[i]['valueList'].length > 0) {
-        sizeIndex.add(0);
-        sizeId.add(specificationList[i]['valueList'][0]['id']);
-        sizeNameList.add(specificationList[i]['valueList'][0]['value']);
-      }
-    }
-    Map goodsStockPriceAny =
-        getGoodsMsgById(goodsMsg['productList'], sizeId.join('_'));
-    setState(() {
-      imgList = goodsMsg['gallery'];
-      goodsMsgs = goodsMsg;
-      userHasCollect = goodsMsg['userHasCollect'];
-      initLoading = false;
-      goodsMax = goodsStockPriceAny['goods_number'];
-      chooseSizeIndex = sizeIndex;
-      chooseSizeStr = sizeNameList.join('、');
-      goodsStockPrice = goodsStockPriceAny;
-      userToken = token;
-      goodsCount = token != null ? cartData['cartTotal']['goodsCount'] : 0;
+
+    // var cartData = token != null ? data[1]['data']: null;
+
+    // var specificationList = goodsMsgs['spec'];
+    // List<int> sizeIndex = [];
+    // List<String> sizeNameList = [];
+    // List<int> sizeId = [];
+    // if(specificationList.length > 0) {
+    //   for (var i = 0; i < specificationList.length; i++) {
+    //     sizeIndex.add(0);
+    //     sizeId.add(specificationList['id']);
+    //     sizeNameList.add(specificationList['name']);
+    //   }
+    // }
+    this.setState(() {
+        goodsMsgs = data[0]['data'];
+        initLoading = false;
+        userToken = token;
     });
+    // Map goodsStockPriceAny =
+    //     getGoodsMsgById(goodsMsg['productList'], sizeId.join('_'));
+    // setState(() {
+    //   imgList = goodsMsg['gallery'];
+    //   goodsMsgs = goodsMsg;
+    //   userHasCollect = goodsMsg['userHasCollect'];
+    //   initLoading = false;
+    //   goodsMax = goodsStockPriceAny['goods_number'];
+    //   chooseSizeIndex = sizeIndex;
+    //   chooseSizeStr = sizeNameList.join('、');
+    //   goodsStockPrice = goodsStockPriceAny;
+    //   userToken = token;
+    //   goodsCount = token != null ? cartData['cartTotal']['goodsCount'] : 0;
+    // });
+    
   }
 
   @override
@@ -186,7 +191,7 @@ class _GoodsDetail extends State<GoodsDetail> {
                                     ),
                                   ),
                                   child: Text(
-                                    '$goodsCount',
+                                    '1',// TODO: 商品数量
                                     style: TextStyle(
                                       color: Colors.red,
                                       fontSize: Rem.getPxToRem(20),
@@ -211,7 +216,11 @@ class _GoodsDetail extends State<GoodsDetail> {
             ),
           ),
           Expanded(
-            child: Container(
+            child: GestureDetector(
+              onTap: () async{
+                  // TODO:直接购买 
+              },
+              child:  Container(
               padding: EdgeInsets.fromLTRB(
                 Rem.getPxToRem(20),
                 0,
@@ -238,9 +247,14 @@ class _GoodsDetail extends State<GoodsDetail> {
                 ),
               ),
             ),
+            ) 
           ),
           Expanded(
-            child: Container(
+            child: GestureDetector(
+              onTap: () async{
+                // TODO:添加到购物车
+              },
+              child:Container(
               padding: EdgeInsets.fromLTRB(
                 Rem.getPxToRem(10),
                 0,
@@ -269,6 +283,8 @@ class _GoodsDetail extends State<GoodsDetail> {
                 ),
               ),
             ),
+            )
+            
           )
         ],
       ),
@@ -301,25 +317,25 @@ class _GoodsDetail extends State<GoodsDetail> {
             pinned: true,
             delegate: SliverCustomHeaderDelegate(
               title:
-                  initLoading ? 'loading...' : '${goodsMsgs["info"]['name']}',
+                  initLoading ? 'loading...' : goodsMsgs['coffee']['name'],// TODO: 商品名称
               collapsedHeight: Rem.getPxToRem(100),
               expandedHeight: Rem.getPxToRem(700),
               paddingTop: MediaQuery.of(context).padding.top,
               child: buildSwiper(context, imgList),
             ),
           ),
-          buildOneWidget(
-            buildGoodsLa(context),
-          ),
+          // buildOneWidget(
+          //   buildGoodsLa(context),
+          // ),
           buildOneWidget(
             buildGoodsMsg(context),
           ),
-          buildOneWidget(
-            buildSize(context),
-          ),
-          buildOneWidget(
-            buildComment(context),
-          ),
+          // buildOneWidget(
+          //   buildSize(context),
+          // ),
+          // buildOneWidget(
+          //   buildComment(context),
+          // ),
           buildOneWidget(Column(
             children: <Widget>[
               Container(
@@ -337,8 +353,7 @@ class _GoodsDetail extends State<GoodsDetail> {
                 ),
               ),
               Html(
-                data: goodsMsgs['info']['goods_desc']
-                    .replaceAll('<p><br/></p>', ''),
+                data: goodsMsgs['coffee']['des'],
               ),
             ],
           )),
@@ -360,7 +375,7 @@ class _GoodsDetail extends State<GoodsDetail> {
 
 // 轮播图
   Widget buildSwiper(BuildContext context, List imgData) {
-    if (imgData.length == 0) {
+    if (goodsMsgs['coffee']['img'] == null) {
       return Container(
         width: MediaQuery.of(context).size.width,
         height: Rem.getPxToRem(700),
@@ -378,88 +393,75 @@ class _GoodsDetail extends State<GoodsDetail> {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: Rem.getPxToRem(700),
-      child: Swiper(
-        itemCount: imgData.length,
-        itemBuilder: (BuildContext context, int index) {
-          return CachedNetworkImage(
-            imageUrl: imgData[index]['img_url'],
-            fit: BoxFit.cover,
-          );
-        },
-        controller: SwiperController(),
-        scrollDirection: Axis.horizontal,
-        autoplay: true,
-        autoplayDelay: 4000,
-        onTap: (index) => print('点击了第$index'),
-      ),
+      child: CachedNetworkImage(imageUrl: goodsMsgs['coffee']['img'])
     );
   }
 
 // 商品活动栏
-  Widget buildGoodsLa(BuildContext context) {
-    return Container(
-      color: Color.fromARGB(255, 244, 244, 244),
-      padding: EdgeInsets.all(5),
-      child: Column(
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.star,
-                      color: Colors.red,
-                      size: Rem.getPxToRem(26),
-                    ),
-                    Container(
-                      child: Text(
-                        '30天无忧退货',
-                        style: TextStyle(fontSize: Rem.getPxToRem(26)),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.star,
-                      color: Colors.red,
-                      size: Rem.getPxToRem(26),
-                    ),
-                    Text(
-                      '满88元免邮费',
-                      style: TextStyle(fontSize: Rem.getPxToRem(26)),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.star,
-                      color: Colors.red,
-                      size: Rem.getPxToRem(26),
-                    ),
-                    Text(
-                      '48小时快速退款',
-                      style: TextStyle(fontSize: Rem.getPxToRem(26)),
-                    )
-                  ],
-                ),
-              )
-            ],
-          )
-        ],
-      ),
-    );
-  }
+  // Widget buildGoodsLa(BuildContext context) {
+  //   return Container(
+  //     color: Color.fromARGB(255, 244, 244, 244),
+  //     padding: EdgeInsets.all(5),
+  //     child: Column(
+  //       children: <Widget>[
+  //         Row(
+  //           children: <Widget>[
+  //             Expanded(
+  //               child: Row(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: <Widget>[
+  //                   Icon(
+  //                     Icons.star,
+  //                     color: Colors.red,
+  //                     size: Rem.getPxToRem(26),
+  //                   ),
+  //                   Container(
+  //                     child: Text(
+  //                       '30天无忧退货',
+  //                       style: TextStyle(fontSize: Rem.getPxToRem(26)),
+  //                     ),
+  //                   )
+  //                 ],
+  //               ),
+  //             ),
+  //             Expanded(
+  //               child: Row(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: <Widget>[
+  //                   Icon(
+  //                     Icons.star,
+  //                     color: Colors.red,
+  //                     size: Rem.getPxToRem(26),
+  //                   ),
+  //                   Text(
+  //                     '满88元免邮费',
+  //                     style: TextStyle(fontSize: Rem.getPxToRem(26)),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             Expanded(
+  //               child: Row(
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: <Widget>[
+  //                   Icon(
+  //                     Icons.star,
+  //                     color: Colors.red,
+  //                     size: Rem.getPxToRem(26),
+  //                   ),
+  //                   Text(
+  //                     '48小时快速退款',
+  //                     style: TextStyle(fontSize: Rem.getPxToRem(26)),
+  //                   )
+  //                 ],
+  //               ),
+  //             )
+  //           ],
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   // 商品信息
   Widget buildGoodsMsg(BuildContext context) {
@@ -471,24 +473,15 @@ class _GoodsDetail extends State<GoodsDetail> {
           Padding(
             padding: EdgeInsets.only(bottom: 10),
             child: Text(
-              goodsMsgs["info"]['name'],
+              goodsMsgs['coffee']['name'],// TODO: 商品名称
               style: TextStyle(
                 fontSize: Rem.getPxToRem(40),
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(bottom: 10),
-            child: Text(
-              goodsMsgs["info"]['goods_brief'],
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: Rem.getPxToRem(30),
-              ),
-            ),
-          ),
           Text(
-            '￥${goodsStockPrice['retail_price']}',
+            // TODO: 商品价格
+            '￥${goodsMsgs['coffee']['value']}',
             style: TextStyle(
               color: Colors.red,
               fontSize: Rem.getPxToRem(40),
@@ -500,516 +493,516 @@ class _GoodsDetail extends State<GoodsDetail> {
   }
 
   // 选择规格
-  Widget buildSize(BuildContext context) {
-    return InkResponse(
-      child: Container(
-        height: Rem.getPxToRem(100),
-        margin: EdgeInsets.only(top: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-        ),
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(5),
-              child: Text(
-                '已选',
-                style: TextStyle(color: Colors.grey),
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.all(5),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        '${chooseSizeStr.length > 0 ? chooseSizeStr : '该商品没有size!'}',
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Text('x$goodsNumber'),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(5),
-              child: Icon(
-                Icons.keyboard_arrow_right,
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ),
-      onTap: () {
-        buildSizeModel(context);
-      },
-    );
-  }
+  // Widget buildSize(BuildContext context) {
+  //   return InkResponse(
+  //     child: Container(
+  //       height: Rem.getPxToRem(100),
+  //       margin: EdgeInsets.only(top: 10),
+  //       decoration: BoxDecoration(
+  //         color: Colors.white,
+  //       ),
+  //       child: Row(
+  //         children: <Widget>[
+  //           Padding(
+  //             padding: EdgeInsets.all(5),
+  //             child: Text(
+  //               '已选',
+  //               style: TextStyle(color: Colors.grey),
+  //             ),
+  //           ),
+  //           Expanded(
+  //             child: Padding(
+  //               padding: EdgeInsets.all(5),
+  //               child: Row(
+  //                 children: <Widget>[
+  //                   Expanded(
+  //                     child: Text(
+  //                       '${chooseSizeStr.length > 0 ? chooseSizeStr : '该商品没有size!'}',
+  //                       overflow: TextOverflow.ellipsis,
+  //                     ),
+  //                   ),
+  //                   // Text('x$goodsNumber'),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //           Padding(
+  //             padding: EdgeInsets.all(5),
+  //             child: Icon(
+  //               Icons.keyboard_arrow_right,
+  //               color: Colors.grey,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //     onTap: () {
+  //       buildSizeModel(context);
+  //     },
+  //   );
+  // }
 
   // 商品评论
-  Widget buildComment(BuildContext context) {
-    List<Widget> imgs = [];
-    if (goodsMsgs['comment']['count'] > 0) {
-      var imgListMap = goodsMsgs['comment']['data']['pic_list'];
-      for (int i = 0; i < imgListMap.length; i++) {
-        imgs.add(Container(
-          height: Rem.getPxToRem(200),
-          width: Rem.getPxToRem(200),
-          child: CachedNetworkImage(
-            imageUrl: imgListMap[i]['pic_url'],
-            fit: BoxFit.cover,
-          ),
-        ));
-      }
-    }
-    return Container(
-      margin: EdgeInsets.only(top: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-      ),
-      child: Column(
-        children: <Widget>[
-          InkResponse(
-            child: Container(
-              height: Rem.getPxToRem(100),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(left: 5),
-                    child: Text(
-                      '评论',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.only(left: 10),
-                      child: Text(
-                        '${goodsMsgs['comment']['count']}条',
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 5),
-                    child: Icon(
-                      Icons.keyboard_arrow_right,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            onTap: () {
-              if (goodsMsgs['comment']['count'] > 0) {
-                Router.push(
-                    '/moreComment', context, {'id': widget.arguments['id']});
-              }
-            },
-          ),
-          goodsMsgs['comment']['count'] > 0
-              ? Container(
-                  height: Rem.getPxToRem(80),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        color: Colors.grey,
-                        width: .5,
-                      ),
-                    ),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Text('匿名用户'),
-                      ),
-                      Text(
-                        '${goodsMsgs['comment']['data']['add_time']}',
-                        style: TextStyle(
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              : Container(),
-          goodsMsgs['comment']['count'] > 0
-              ? Container(
-                  height: Rem.getPxToRem(80),
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  child: Text(
-                    '${goodsMsgs['comment']['data']['content']}',
-                    softWrap: true,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Colors.grey,
-                    ),
-                  ),
-                )
-              : Container(),
-          goodsMsgs['comment']['count'] > 0
-              ? Container(
-                  padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
-                  width: double.infinity,
-                  child: Wrap(
-                    children: imgs,
-                  ),
-                )
-              : Container()
-        ],
-      ),
-    );
-  }
+  // Widget buildComment(BuildContext context) {
+  //   List<Widget> imgs = [];
+  //   if (goodsMsgs['comment']['count'] > 0) {
+  //     var imgListMap = goodsMsgs['comment']['data']['pic_list'];
+  //     for (int i = 0; i < imgListMap.length; i++) {
+  //       imgs.add(Container(
+  //         height: Rem.getPxToRem(200),
+  //         width: Rem.getPxToRem(200),
+  //         child: CachedNetworkImage(
+  //           imageUrl: imgListMap[i]['pic_url'],
+  //           fit: BoxFit.cover,
+  //         ),
+  //       ));
+  //     }
+  //   }
+  //   return Container(
+  //     margin: EdgeInsets.only(top: 10),
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //     ),
+  //     child: Column(
+  //       children: <Widget>[
+  //         InkResponse(
+  //           child: Container(
+  //             height: Rem.getPxToRem(100),
+  //             child: Row(
+  //               children: <Widget>[
+  //                 Container(
+  //                   padding: EdgeInsets.only(left: 5),
+  //                   child: Text(
+  //                     '评论',
+  //                     style: TextStyle(color: Colors.grey),
+  //                   ),
+  //                 ),
+  //                 Expanded(
+  //                   child: Container(
+  //                     padding: EdgeInsets.only(left: 10),
+  //                     child: Text(
+  //                       '${goodsMsgs['comment']['count']}条',
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 Padding(
+  //                   padding: EdgeInsets.only(right: 5),
+  //                   child: Icon(
+  //                     Icons.keyboard_arrow_right,
+  //                     color: Colors.grey,
+  //                   ),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //           onTap: () {
+  //             if (goodsMsgs['comment']['count'] > 0) {
+  //               Router.push(
+  //                   '/moreComment', context, {'id': widget.arguments['id']});
+  //             }
+  //           },
+  //         ),
+  //         goodsMsgs['comment']['count'] > 0
+  //             ? Container(
+  //                 height: Rem.getPxToRem(80),
+  //                 decoration: BoxDecoration(
+  //                   border: Border(
+  //                     top: BorderSide(
+  //                       color: Colors.grey,
+  //                       width: .5,
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 padding: EdgeInsets.symmetric(horizontal: 5),
+  //                 child: Row(
+  //                   children: <Widget>[
+  //                     Expanded(
+  //                       child: Text('匿名用户'),
+  //                     ),
+  //                     Text(
+  //                       '${goodsMsgs['comment']['data']['add_time']}',
+  //                       style: TextStyle(
+  //                         color: Colors.grey,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               )
+  //             : Container(),
+  //         goodsMsgs['comment']['count'] > 0
+  //             ? Container(
+  //                 height: Rem.getPxToRem(80),
+  //                 width: double.infinity,
+  //                 padding: EdgeInsets.symmetric(horizontal: 5),
+  //                 child: Text(
+  //                   '${goodsMsgs['comment']['data']['content']}',
+  //                   softWrap: true,
+  //                   maxLines: 2,
+  //                   overflow: TextOverflow.ellipsis,
+  //                   style: TextStyle(
+  //                     color: Colors.grey,
+  //                   ),
+  //                 ),
+  //               )
+  //             : Container(),
+  //         goodsMsgs['comment']['count'] > 0
+  //             ? Container(
+  //                 padding: EdgeInsets.fromLTRB(5, 0, 5, 5),
+  //                 width: double.infinity,
+  //                 child: Wrap(
+  //                   children: imgs,
+  //                 ),
+  //               )
+  //             : Container()
+  //       ],
+  //     ),
+  //   );
+  // }
 
-  // 商品规格弹窗
-  buildSizeModel(BuildContext context) {
-    return showModalBottomSheetOp(
-      backgroundColor: Colors.transparent,
-      context: context,
-      // 这里不知道为什么会重复执行TODO优化
-      // 因为动画问题
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (context1, setstate1) {
-          return Container(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(10.0),
-              ),
-            ),
-            child: Column(
-              children: <Widget>[
-                // close按钮
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: InkResponse(
-                    child: Container(
-                      width: 30,
-                      height: 30,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(30),
-                        ),
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.close,
-                          color: Colors.grey[500],
-                        ),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ),
-                // 商品图片
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        height: 100,
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                              width: 100,
-                              height: 100,
-                              child: CachedNetworkImage(
-                                imageUrl: goodsMsgs['info']['list_pic_url'],
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.only(left: 10),
-                                child: Column(
-                                  children: <Widget>[
-                                    Container(
-                                      height: 75,
-                                      child: Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Text.rich(
-                                          TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: "￥",
-                                                style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text:
-                                                    '${goodsStockPrice['retail_price']}',
-                                                style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 25,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 25,
-                                      child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            '${chooseSizeStr.length > 0 ? chooseSizeStr : goodsMsgs["info"]['name']}',
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                            overflow: TextOverflow.ellipsis,
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                //商品规格
-                buildSizeItem(context, setstate1),
-                // 商品数量
-                buildSizeNun(context, setstate1),
-                // 下单或加入购物车
-                Container(
-                  height: Rem.getPxToRem(80),
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(
-                            Rem.getPxToRem(20),
-                            0,
-                            Rem.getPxToRem(10),
-                            0,
-                          ),
-                          child: Center(
-                            child: Container(
-                              child: Center(
-                                child: Text(
-                                  '加入购物车',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(Rem.getPxToRem(80)),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(
-                            Rem.getPxToRem(10),
-                            0,
-                            Rem.getPxToRem(20),
-                            0,
-                          ),
-                          child: Center(
-                            child: Container(
-                              child: Center(
-                                child: Text(
-                                  '立即购买',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              width: double.infinity,
-                              height: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.orange,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(Rem.getPxToRem(80)),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          );
-        });
-      },
-    );
-  }
+  // // 商品规格弹窗
+  // buildSizeModel(BuildContext context) {
+  //   return showModalBottomSheetOp(
+  //     backgroundColor: Colors.transparent,
+  //     context: context,
+  //     // 这里不知道为什么会重复执行TODO优化
+  //     // 因为动画问题
+  //     builder: (BuildContext context) {
+  //       return StatefulBuilder(builder: (context1, setstate1) {
+  //         return Container(
+  //           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+  //           decoration: BoxDecoration(
+  //             color: Colors.white,
+  //             borderRadius: BorderRadius.vertical(
+  //               top: Radius.circular(10.0),
+  //             ),
+  //           ),
+  //           child: Column(
+  //             children: <Widget>[
+  //               // close按钮
+  //               Align(
+  //                 alignment: Alignment.centerRight,
+  //                 child: InkResponse(
+  //                   child: Container(
+  //                     width: 30,
+  //                     height: 30,
+  //                     decoration: BoxDecoration(
+  //                       color: Colors.grey[100],
+  //                       borderRadius: BorderRadius.all(
+  //                         Radius.circular(30),
+  //                       ),
+  //                     ),
+  //                     child: Center(
+  //                       child: Icon(
+  //                         Icons.close,
+  //                         color: Colors.grey[500],
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   onTap: () {
+  //                     Navigator.pop(context);
+  //                   },
+  //                 ),
+  //               ),
+  //               // 商品图片
+  //               Container(
+  //                 margin: EdgeInsets.only(top: 10),
+  //                 child: Column(
+  //                   children: <Widget>[
+  //                     Container(
+  //                       height: 100,
+  //                       child: Row(
+  //                         children: <Widget>[
+  //                           Container(
+  //                             width: 100,
+  //                             height: 100,
+  //                             child: CachedNetworkImage(
+  //                               imageUrl: goodsMsgs['coffee']['img'],
+  //                               fit: BoxFit.cover,
+  //                             ),
+  //                           ),
+  //                           Expanded(
+  //                             child: Container(
+  //                               padding: EdgeInsets.only(left: 10),
+  //                               child: Column(
+  //                                 children: <Widget>[
+  //                                   Container(
+  //                                     height: 75,
+  //                                     child: Align(
+  //                                       alignment: Alignment.bottomLeft,
+  //                                       child: Text.rich(
+  //                                         TextSpan(
+  //                                           children: [
+  //                                             TextSpan(
+  //                                               text: "￥",
+  //                                               style: TextStyle(
+  //                                                 color: Colors.red,
+  //                                                 fontSize: 16,
+  //                                               ),
+  //                                             ),
+  //                                             TextSpan(
+  //                                               text:
+  //                                                   '${goodsMsgs['coffee']['value']}',
+  //                                               style: TextStyle(
+  //                                                 color: Colors.red,
+  //                                                 fontWeight: FontWeight.bold,
+  //                                                 fontSize: 25,
+  //                                               ),
+  //                                             ),
+  //                                           ],
+  //                                         ),
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                   Container(
+  //                                     height: 25,
+  //                                     child: Align(
+  //                                         alignment: Alignment.centerLeft,
+  //                                         child: Text(
+  //                                           '${chooseSizeStr.length > 0 ? chooseSizeStr : goodsMsgs["coffee"]['name']}',
+  //                                           style:
+  //                                               TextStyle(color: Colors.grey),
+  //                                           overflow: TextOverflow.ellipsis,
+  //                                         )),
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ],
+  //                       ),
+  //                     )
+  //                   ],
+  //                 ),
+  //               ),
+  //               //商品规格
+  //               buildSizeItem(context, setstate1),
+  //               // 商品数量
+  //               buildSizeNun(context, setstate1),
+  //               // 下单或加入购物车
+  //               Container(
+  //                 height: Rem.getPxToRem(80),
+  //                 child: Row(
+  //                   children: <Widget>[
+  //                     Expanded(
+  //                       child: Container(
+  //                         padding: EdgeInsets.fromLTRB(
+  //                           Rem.getPxToRem(20),
+  //                           0,
+  //                           Rem.getPxToRem(10),
+  //                           0,
+  //                         ),
+  //                         child: Center(
+  //                           child: Container(
+  //                             child: Center(
+  //                               child: Text(
+  //                                 '加入购物车',
+  //                                 style: TextStyle(
+  //                                   color: Colors.white,
+  //                                   fontWeight: FontWeight.bold,
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                             decoration: BoxDecoration(
+  //                               color: Colors.red,
+  //                               borderRadius: BorderRadius.all(
+  //                                 Radius.circular(Rem.getPxToRem(80)),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ),
+  //                     Expanded(
+  //                       child: Container(
+  //                         padding: EdgeInsets.fromLTRB(
+  //                           Rem.getPxToRem(10),
+  //                           0,
+  //                           Rem.getPxToRem(20),
+  //                           0,
+  //                         ),
+  //                         child: Center(
+  //                           child: Container(
+  //                             child: Center(
+  //                               child: Text(
+  //                                 '立即购买',
+  //                                 style: TextStyle(
+  //                                   color: Colors.white,
+  //                                   fontWeight: FontWeight.bold,
+  //                                 ),
+  //                               ),
+  //                             ),
+  //                             width: double.infinity,
+  //                             height: double.infinity,
+  //                             decoration: BoxDecoration(
+  //                               color: Colors.orange,
+  //                               borderRadius: BorderRadius.all(
+  //                                 Radius.circular(Rem.getPxToRem(80)),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     )
+  //                   ],
+  //                 ),
+  //               )
+  //             ],
+  //           ),
+  //         );
+  //       });
+  //     },
+  //   );
+  // }
 
-  Widget buildSizeNun(BuildContext context, setstate1) {
-    return Padding(
-      padding: EdgeInsets.fromLTRB(0, 5, 5, 10),
-      child: Column(
-        children: <Widget>[
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-            child: Text(
-              '数量',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Container(
-              padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-              child: Count(
-                number: goodsNumber,
-                min: goodsMin,
-                max: goodsMax,
-                onChange: (index) {
-                  setstate1(() {
-                    goodsNumber = index;
-                  });
-                  setState(() {
-                    goodsNumber = index;
-                  });
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget buildSizeNun(BuildContext context, setstate1) {
+  //   return Padding(
+  //     padding: EdgeInsets.fromLTRB(0, 5, 5, 10),
+  //     child: Column(
+  //       children: <Widget>[
+  //         Container(
+  //           width: double.infinity,
+  //           padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+  //           child: Text(
+  //             '数量',
+  //             style: TextStyle(fontWeight: FontWeight.bold),
+  //           ),
+  //         ),
+  //         Align(
+  //           alignment: Alignment.centerLeft,
+  //           child: Container(
+  //             padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+  //             child: Count(
+  //               number: goodsNumber,
+  //               min: goodsMin,
+  //               max: goodsMax,
+  //               onChange: (index) {
+  //                 setstate1(() {
+  //                   goodsNumber = index;
+  //                 });
+  //                 setState(() {
+  //                   goodsNumber = index;
+  //                 });
+  //               },
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   // 规格选择器
-  Widget buildSizeItem(BuildContext context, setstate1) {
-    var specificationList = goodsMsgs['specificationList'];
-    List<Widget> list = [];
-    for (var i = 0; i < specificationList.length; i++) {
-      List<Widget> sizeItemList = [];
-      for (var j = 0; j < specificationList[i]['valueList'].length; j++) {
-        if (j == chooseSizeIndex[i]) {
-          sizeItemList.add(
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-              decoration: BoxDecoration(
-                color: Color.fromARGB(10, 240, 10, 32),
-                border: Border.all(color: Colors.red),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(30),
-                ),
-              ),
-              child: Text(
-                specificationList[i]['valueList'][j]['value'],
-                style: TextStyle(color: Colors.red),
-              ),
-            ),
-          );
-        } else {
-          sizeItemList.add(InkResponse(
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                border: Border.all(color: Colors.grey[200]),
-                borderRadius: BorderRadius.all(
-                  Radius.circular(30),
-                ),
-              ),
-              child: Text(specificationList[i]['valueList'][j]['value']),
-            ),
-            onTap: () {
-              chooseSizeIndex[i] = j;
-              setstate1(() {});
-              Map data = getSizeMsgByIndex(chooseSizeIndex);
-              setState(() {
-                chooseSizeIndex = chooseSizeIndex;
-                chooseSizeStr = data['chooseSizeStr'];
-                goodsNumber = 0;
-                goodsMax = data['goodsStockPrice']['goods_number'];
-                goodsStockPrice = data['goodsStockPrice'];
-              });
-            },
-          ));
-        }
-      }
-      list.add(
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 5),
-          child: Column(
-            children: <Widget>[
-              Container(
-                width: double.infinity,
-                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                margin: EdgeInsets.only(bottom: 5),
-                child: Text(
-                  specificationList[i]['name'],
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              Container(
-                width: double.infinity,
-                child: Wrap(
-                  spacing: 20,
-                  runSpacing: 10,
-                  children: sizeItemList,
-                ),
-              )
-            ],
-          ),
-        ),
-      );
-    }
-    return Column(
-      children: list,
-    );
-  }
+  // Widget buildSizeItem(BuildContext context, setstate1) {
+  //   var specificationList = goodsMsgs['spec'];
+  //   List<Widget> list = [];
+  //   for (var i = 0; i < specificationList.length; i++) {
+  //     List<Widget> sizeItemList = [];
+  //     for (var j = 0; j < specificationList.length; j++) {
+  //       if (j == chooseSizeIndex[i]) {
+  //         sizeItemList.add(
+  //           Container(
+  //             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+  //             decoration: BoxDecoration(
+  //               color: Color.fromARGB(10, 240, 10, 32),
+  //               border: Border.all(color: Colors.red),
+  //               borderRadius: BorderRadius.all(
+  //                 Radius.circular(30),
+  //               ),
+  //             ),
+  //             child: Text(
+  //               specificationList[i]['valueList'][j]['value'],
+  //               style: TextStyle(color: Colors.red),
+  //             ),
+  //           ),
+  //         );
+  //       } else {
+  //         sizeItemList.add(InkResponse(
+  //           child: Container(
+  //             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+  //             decoration: BoxDecoration(
+  //               color: Colors.grey[200],
+  //               border: Border.all(color: Colors.grey[200]),
+  //               borderRadius: BorderRadius.all(
+  //                 Radius.circular(30),
+  //               ),
+  //             ),
+  //             child: Text(specificationList[i]['valueList'][j]['value']),
+  //           ),
+  //           onTap: () {
+  //             chooseSizeIndex[i] = j;
+  //             setstate1(() {});
+  //             Map data = getSizeMsgByIndex(chooseSizeIndex);
+  //             setState(() {
+  //               chooseSizeIndex = chooseSizeIndex;
+  //               chooseSizeStr = data['chooseSizeStr'];
+  //               goodsNumber = 0;
+  //               goodsMax = data['goodsStockPrice']['goods_number'];
+  //               goodsStockPrice = data['goodsStockPrice'];
+  //             });
+  //           },
+  //         ));
+  //       }
+  //     }
+  //     list.add(
+  //       Padding(
+  //         padding: EdgeInsets.symmetric(vertical: 5),
+  //         child: Column(
+  //           children: <Widget>[
+  //             Container(
+  //               width: double.infinity,
+  //               padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+  //               margin: EdgeInsets.only(bottom: 5),
+  //               child: Text(
+  //                 specificationList[i]['name'],
+  //                 style: TextStyle(fontWeight: FontWeight.bold),
+  //               ),
+  //             ),
+  //             Container(
+  //               width: double.infinity,
+  //               child: Wrap(
+  //                 spacing: 20,
+  //                 runSpacing: 10,
+  //                 children: sizeItemList,
+  //               ),
+  //             )
+  //           ],
+  //         ),
+  //       ),
+  //     );
+  //   }
+  //   return Column(
+  //     children: list,
+  //   );
+  // }
 
   // 通过下标获取商品的价格跟规格名称
-  getSizeMsgByIndex(chooseSizeIndex) {
-    var specificationList = goodsMsgs['specificationList'];
-    List sizeStrList = [];
-    List sizeIdList = [];
-    for (var i = 0; i < specificationList.length; i++) {
-      for (var j = 0; j < specificationList[i]['valueList'].length; j++) {
-        if (chooseSizeIndex[i] == j) {
-          sizeStrList.add(specificationList[i]['valueList'][j]['value']);
-          sizeIdList.add(specificationList[i]['valueList'][j]['id']);
-          break;
-        }
-      }
-    }
-    Map goodsStockAndPrice =
-        getGoodsMsgById(goodsMsgs['productList'], sizeIdList.join('_'));
-    return {
-      'chooseSizeStr': sizeStrList.join('、'),
-      'goodsStockPrice': goodsStockAndPrice,
-    };
-  }
+  // getSizeMsgByIndex(chooseSizeIndex) {
+  //   var specificationList = goodsMsgs['specificationList'];
+  //   List sizeStrList = [];
+  //   List sizeIdList = [];
+  //   for (var i = 0; i < specificationList.length; i++) {
+  //     for (var j = 0; j < specificationList[i]['valueList'].length; j++) {
+  //       if (chooseSizeIndex[i] == j) {
+  //         sizeStrList.add(specificationList[i]['valueList'][j]['value']);
+  //         sizeIdList.add(specificationList[i]['valueList'][j]['id']);
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   Map goodsStockAndPrice =
+  //       getGoodsMsgById(goodsMsgs['productList'], sizeIdList.join('_'));
+  //   return {
+  //     'chooseSizeStr': sizeStrList.join('、'),
+  //     'goodsStockPrice': goodsStockAndPrice,
+  //   };
+  // }
 
   // 获取某规格的商品信息
-  getGoodsMsgById(List productList, String id) {
-    for (int i = 0; i < productList.length; i++) {
-      if (productList[i]['goods_specification_ids'] == id) {
-        return productList[i];
-      }
-    }
-  }
+//   getGoodsMsgById(List productList, String id) {
+//     for (int i = 0; i < productList.length; i++) {
+//       if (productList[i]['goods_specification_ids'] == id) {
+//         return productList[i];
+//       }
+//     }
+//   }
 }

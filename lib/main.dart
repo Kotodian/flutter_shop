@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
    Rem.setDesignWidth(750.0);
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(builder: (_) => Model(token, userName,image)),
+        ChangeNotifierProvider(builder: (_) => Model(token, userName,image))
       ],
       child: Consumer<Model>(
         builder: (context, model, widget) {

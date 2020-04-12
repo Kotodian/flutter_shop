@@ -1,8 +1,3 @@
-/*
- * @Description: 本地存储工具
- * @Author: luoguoxiong
- * @Date: 2019-08-26 17:29:18
- */
 import 'dart:async';
 import 'package:shared_preferences/shared_preferences.dart';
 
