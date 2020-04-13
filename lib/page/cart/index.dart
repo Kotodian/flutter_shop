@@ -5,6 +5,7 @@ import 'package:flutter_shop/method/cart.dart';
 import 'package:flutter_shop/model/cartInfo.dart';
 import 'package:flutter_shop/model/index.dart';
 import 'package:flutter_shop/router/index.dart';
+import 'package:flutter_shop/utils/cache.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -31,16 +32,23 @@ class CartPageState extends State<CartPage> {
   bool isEdit = false;
 
   Future getCustomerCart() async {
+    final sq = await SpUtil.getInstance();
+    if(sq.getString('token') != '') {
     var data = await getCartList();
-    print(data);
-    this.setState(() {
-      data['data']['cartList'].forEach((item){
+    //print(data);
+    if(mounted) {
+      setState(() {
+        data['data']['cartList'].forEach((item){
         list.add(CartInfo.fromJson(item));
         total += item['value'];
       });
       loading = true;
     });
   }
+}else {
+  Router.push('/login', context);
+}
+}
 
   @override
   void initState() {
@@ -64,10 +72,13 @@ class CartPageState extends State<CartPage> {
       } else {
         total -= totals;
       }
+      if(mounted) {
       this.setState(() {
         list = list;
         total = total;
       });
+      }
+
       return response['data'];
     } catch (e) {
       print(e);
@@ -338,10 +349,6 @@ class CartPageState extends State<CartPage> {
 
   @override
   Widget build(BuildContext context) {
-    final model = Provider.of<Model>(context);
-    if(model.token == null) {
-      Router.push('/login', context);
-    } else {
        return Scaffold(
         backgroundColor: Colors.white,
         body: CustomScrollView(slivers: <Widget>[
@@ -431,6 +438,4 @@ class CartPageState extends State<CartPage> {
                 height: 0.0,
               ));
     }
-   
   }
-}

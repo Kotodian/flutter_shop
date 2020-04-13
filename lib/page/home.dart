@@ -17,10 +17,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     getCategoryList().then((data){
       var list = CoffeetypeList.fromJson(data['data']);
-      this.setState(() {
-        categoryList = list.coffeetype;
-        isLoading = false;
-      });
+      if(mounted) {
+        this.setState(() {
+          categoryList = list.coffeetype;
+          isLoading = false;
+        });
+      }
+
     });
     super.initState();
   }

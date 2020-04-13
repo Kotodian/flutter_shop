@@ -1,21 +1,25 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/page/customer/addAddress.dart';
+import 'package:flutter_shop/page/customer/address.dart';
 import 'package:flutter_shop/page/customer/mine.dart';
 import 'package:flutter_shop/page/goodsDetail/index.dart';
 import 'package:flutter_shop/page/home.dart';
 import 'package:flutter_shop/page/index.dart';
+import 'package:flutter_shop/page/order/index.dart';
 import 'package:flutter_shop/router/404.dart';
 import 'package:flutter_shop/page/customer/login.dart';
 class Router {
 
   static Map<String, Function> routes = {
-    '/index': (context,{arguments}) => Home(),
-    '/home': (context,{arguments}) => HomePage(),
-    '/login': (context,{arguments}) => Login(),
-    '/mine': (context, {arguments}) => Mine(),
-    '/coffeeDetail': (context, {arguments}) => GoodsDetail(arguments: arguments)
+    '/index': (context,{arguments}) => Home(), // 底部
+    '/home': (context,{arguments}) => HomePage(), // 首页
+    '/login': (context,{arguments}) => Login(), // 登录
+    '/mine': (context,{arguments}) => Mine(), // 我的
+    '/coffeeDetail': (context, {arguments}) => GoodsDetail(arguments: arguments), //咖啡详情
+    '/confirmOrder': (context,{arguments}) => OrderPage(), //确认订单
+    '/orderMap': (context,{arguments}) => OrderMap(), // 地址管理
+    '/addMap': (context,{arguments}) => AddMap()
   };
 
   static run(RouteSettings settings) {
@@ -72,6 +76,6 @@ class Router {
   }
 
   static pop(context) {
-    Navigator.pop(context);
+    Navigator.of(context).pop();
   }
 }

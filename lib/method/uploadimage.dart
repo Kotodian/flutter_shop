@@ -8,7 +8,6 @@ Future uploadImage(File file,String token) async {
   var url = webApi['cusUpload'];
   String path = file.path;
   var name = path.substring(path.lastIndexOf("/") + 1,path.length);
-  var suffix = name.substring(name.lastIndexOf(".") + 1, name.length);
   var image = await MultipartFile.fromFile(
     path,
     filename: name

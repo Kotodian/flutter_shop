@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/method/cart.dart';
 import 'package:flutter_shop/method/categoryList.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_shop/utils/rem.dart';
@@ -55,6 +56,9 @@ class _GoodsDetail extends State<GoodsDetail> {
     List<Future> api = [
       getCoffeeByUUID(id)
     ];
+    if(token != null) {
+      api.add(getCartList());
+    }
     // if (token != null) {
     //   api.add(
     //     Api.getCartMsg(token: token, id: id),
@@ -78,6 +82,7 @@ class _GoodsDetail extends State<GoodsDetail> {
     // }
     this.setState(() {
         goodsMsgs = data[0]['data'];
+        goodsCount = data[1]['data']['cartList'].length;
         initLoading = false;
         userToken = token;
     });
@@ -148,9 +153,11 @@ class _GoodsDetail extends State<GoodsDetail> {
               if (userToken != null) {
                 // await Api.postAddCart(
                 //     id: widget.arguments['id'], token: userToken);
+                if(mounted) {
                 setState(() {
                   userHasCollect = userHasCollect == 1 ? 0 : 1;
                 });
+                }
               } else {
                 Router.push('/login', context, null, () async {
                   var sq = await SpUtil.getInstance();
@@ -191,7 +198,7 @@ class _GoodsDetail extends State<GoodsDetail> {
                                     ),
                                   ),
                                   child: Text(
-                                    '1',// TODO: 商品数量
+                                    goodsCount.toString(),// TODO: 商品数量
                                     style: TextStyle(
                                       color: Colors.red,
                                       fontSize: Rem.getPxToRem(20),

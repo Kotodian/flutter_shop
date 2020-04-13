@@ -19,9 +19,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     tabController = TabController(vsync: this, length: 5)..addListener((){
-      setState(() {
-        currentIndex = tabController.index;
-      });
+      if(mounted) {
+        setState(() {
+          currentIndex = tabController.index;
+        });
+      }
     });
   }
 
@@ -33,9 +35,11 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         initialIndex: currentIndex,
         items:bottomNavigationBar,
         onTap: (index) {
-          this.setState(() {
-            currentIndex = index;
-          });
+          if(mounted) {
+            this.setState(() {
+              currentIndex = index;
+            });
+          }
           tabController.animateTo(index, duration: Duration(milliseconds: 300),curve: Curves.ease);
         },
       ),

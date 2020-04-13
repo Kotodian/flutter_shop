@@ -42,10 +42,12 @@ class _Sort extends State<Sort> {
     //   getCategoryMsg(id);
     // }
     var response = await getCategoryList();
-    setState(() {
-      tabs = response['data']['coffeetype'];
-      isLoading =false;
-    });
+    if(mounted) {
+      setState(() {
+       tabs = response['data']['coffeetype'];
+        isLoading =false;
+      });
+    }
     if(tabs.isNotEmpty) {
       var code = response['data']['coffeetype'][0]['code'];
       getCategoryMsg(code);
@@ -53,15 +55,20 @@ class _Sort extends State<Sort> {
   }
 
   getCategoryMsg(code) async {
-    setState(() {
-      isRequest = true;
-    });
+    if(mounted) {
+     setState(() {
+        isRequest = true;
+      });
+    }
     var data = await getCoffeeList(1,999,code);
-    setState(() {
-      currentCategory = data['data']['coffeeList'];
-      print(currentCategory[0]['uuid']);
-      isRequest = false;
-    });
+    if(mounted) {
+      setState(() {
+        currentCategory = data['data']['coffeeList'];
+        // print(currentCategory[0]['uuid']);
+        isRequest = false;
+      });
+    }
+
   }
 // 搜索框
   Widget buildSearch(BuildContext context) {
