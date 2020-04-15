@@ -7,6 +7,8 @@ import 'package:flutter_shop/page/goodsDetail/index.dart';
 import 'package:flutter_shop/page/home.dart';
 import 'package:flutter_shop/page/index.dart';
 import 'package:flutter_shop/page/order/index.dart';
+import 'package:flutter_shop/page/order/orderDetail.dart';
+import 'package:flutter_shop/page/order/orderList.dart';
 import 'package:flutter_shop/router/404.dart';
 import 'package:flutter_shop/page/customer/login.dart';
 class Router {
@@ -19,7 +21,9 @@ class Router {
     '/coffeeDetail': (context, {arguments}) => GoodsDetail(arguments: arguments), //咖啡详情
     '/confirmOrder': (context,{arguments}) => OrderPage(), //确认订单
     '/orderMap': (context,{arguments}) => OrderMap(), // 地址管理
-    '/addMap': (context,{arguments}) => AddMap()
+    '/addMap': (context,{arguments}) => AddMap(),
+    '/orderList': (context,{arguments}) => OrderListPage(arguments: arguments), // 订单管理
+    '/orderDetail': (context,{arguments}) => OrderDetailPage(arguments: arguments) //订单详情
   };
 
   static run(RouteSettings settings) {

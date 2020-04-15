@@ -1,32 +1,28 @@
-import 'dart:async';
 import 'dart:core';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/method/address.dart';
 import 'package:flutter_shop/router/index.dart';
 import 'package:flutter_shop/utils/cache.dart';
-import '../../config/web.config.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:city_pickers/city_pickers.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../widget/loading_widget.dart';
 
 // 获取收货地址
-Future addUserAddress() async {
-  try {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString('token');
-    var url = webApi['AddUserAddress'];
-    Map<String, dynamic> headers = new Map();
-    headers['Cookie'] = token;
-    Options options = new Options(headers: headers);
-    Response response = await Dio().post("$url", options: options);
-    print(response.data);
-    return response.data;
-  } catch (e) {
-    print(e);
-  }
-}
+// Future addUserAddress() async {
+//   try {
+//     SharedPreferences prefs = await SharedPreferences.getInstance();
+//     String token = prefs.getString('token');
+//     var url = webApi['AddUserAddress'];
+//     Map<String, dynamic> headers = new Map();
+//     headers['Cookie'] = token;
+//     Options options = new Options(headers: headers);
+//     Response response = await Dio().post("$url", options: options);
+//     print(response.data);
+//     return response.data;
+//   } catch (e) {
+//     print(e);
+//   }
+// }
 
 /// 质感设计样式
 class AddMap extends StatefulWidget {

@@ -13,18 +13,11 @@ import 'package:flutter_shop/router/index.dart';
 
 class Mine extends StatelessWidget {
   final List<Map<String, dynamic>> gridList = [
-    {'name': '我的收藏', 'icon': 'assets/images/collect.png'},
-    {'name': '地址管理', 'icon': 'assets/images/address.png'},
-    {'name': '我的订单', 'icon': 'assets/images/order.png'},
-    {'name': '周末拼单', 'icon': 'assets/images/week.png'},
-    {'name': '优惠券', 'icon': 'assets/images/oppen.png'},
-    {'name': '优选购', 'icon': 'assets/images/good.png'},
-    {'name': '我的红包', 'icon': 'assets/images/hongbao.png'},
-    {'name': '客服咨询', 'icon': 'assets/images/kefu.png'},
-    {'name': '会员plus', 'icon': 'assets/images/huiyuan.png'},
-    {'name': '意见反馈', 'icon': 'assets/images/issure.png'},
-    {'name': '账户安全', 'icon': 'assets/images/safe.png'},
-    {'name': '退出登录', 'icon': 'assets/images/logout.png'}
+    {'name': '地址管理', 'icon': 'assets/images/address.png','route':''},
+    {'name': '我的订单', 'icon': 'assets/images/order.png','route':'/orderList'},
+    {'name': '客服咨询', 'icon': 'assets/images/kefu.png','route':''},
+    {'name': '意见反馈', 'icon': 'assets/images/issure.png','route':''},
+    {'name': '退出登录', 'icon': 'assets/images/logout.png','route':''}
   ];
   var username;
   var userImg;
@@ -35,6 +28,8 @@ class Mine extends StatelessWidget {
       var sq = await SpUtil.getInstance();
       sq.remove('token');
       model.setToken(null);
+    }else if(item == '我的订单') {
+      Router.push(gridList[index]['route'], context,{'orderType': 1});
     }
   }
   // 打开底部菜单

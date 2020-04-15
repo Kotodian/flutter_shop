@@ -12,5 +12,7 @@ var webApi = {
   'delCart': baseUrl + '/cus/delcart',
   'checkStatus': baseUrl + '/cus/checkStatus',
   'addressList': baseUrl + '/cus/getAddress',
-  'addAddress': baseUrl + '/cus/addAddress'
+  'addAddress': baseUrl + '/cus/addAddress',
+  'orderList': baseUrl + '/cus/getOrder',
+  'orderDetail': baseUrl + '/cus/orderDetail'
 };
