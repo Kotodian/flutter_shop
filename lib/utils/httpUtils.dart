@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_shop/config/web.config.dart';
+import 'package:flutter_shop/utils/fluttertoast.dart';
 
 class HttpUtil {
   static HttpUtil instance;
@@ -72,6 +73,7 @@ class HttpUtil {
       print('get success---------${response.data}');
     } on DioError catch (e) {
       print('get error------$e');
+
       formatError(e);
     }
     return response.data;
@@ -132,21 +134,27 @@ class HttpUtil {
   void formatError(DioError e) {
     if (e.type == DioErrorType.CONNECT_TIMEOUT) {
       // It occurs when url is opened timeout.
+      ToastUtils.showToast('连接超时');
       print("连接超时");
     } else if (e.type == DioErrorType.SEND_TIMEOUT) {
       // It occurs when url is sent timeout.
+      ToastUtils.showToast('请求超时');
       print("请求超时");
     } else if (e.type == DioErrorType.RECEIVE_TIMEOUT) {
       //It occurs when receiving timeout
+      ToastUtils.showToast('响应超时');      
       print("响应超时");
     } else if (e.type == DioErrorType.RESPONSE) {
       // When the server response, but with a incorrect status, such as 404, 503...
+      ToastUtils.showToast('出现异常');      
       print("出现异常");
     } else if (e.type == DioErrorType.CANCEL) {
       // When the request is cancelled, dio will throw a error with this type.
+      ToastUtils.showToast('请求取消');      
       print("请求取消");
     } else {
       //DEFAULT Default error type, Some other Error. In this case, you can read the DioError.error if it is not null.
+      ToastUtils.showToast('未知错误');      
       print("未知错误");
     }
   }

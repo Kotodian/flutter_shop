@@ -7,6 +7,7 @@ import 'package:flutter_shop/utils/cache.dart';
 import 'package:flutter_shop/widget/SliverCustomHeader_widget.dart';
 import 'package:flutter_shop/router/index.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_shop/widget/bottomSheet_widget.dart';
 
 class GoodsDetail extends StatefulWidget {
   GoodsDetail({this.arguments});
@@ -42,6 +43,10 @@ class _GoodsDetail extends State<GoodsDetail> {
 
   int userHasCollect; //用户是否收藏0：否；1：是
 
+  String spec;
+
+  var price; // 该商品价格
+
   @override
   void initState() {
     super.initState();
@@ -65,26 +70,30 @@ class _GoodsDetail extends State<GoodsDetail> {
     //   );
     // }
     var data = await Future.wait(api);
+    var goodsMsg = data[0]['data'];
+    //print(goodsMsg);
+    //var cartData = token != null ? data[1]['data']: null;
 
-
-    // var cartData = token != null ? data[1]['data']: null;
-
-    // var specificationList = goodsMsgs['spec'];
-    // List<int> sizeIndex = [];
-    // List<String> sizeNameList = [];
-    // List<int> sizeId = [];
-    // if(specificationList.length > 0) {
-    //   for (var i = 0; i < specificationList.length; i++) {
-    //     sizeIndex.add(0);
-    //     sizeId.add(specificationList['id']);
-    //     sizeNameList.add(specificationList['name']);
-    //   }
-    // }
+    var specificationList = goodsMsg['coffee']['spec'];
+    List<int> sizeIndex = [];
+    List<String> sizeNameList = [];
+    List<int> sizeId = [];
+    if(specificationList != null) {
+      for (var i = 0; i < specificationList.length; i++) {
+        sizeIndex.add(0);
+        sizeId.add(specificationList[i]['ID']);
+        sizeNameList.add(specificationList[i]['name']);
+      }
+    }
     this.setState(() {
-        goodsMsgs = data[0]['data'];
+        goodsMsgs = goodsMsg;
+        price = goodsMsg['coffee']['value'];
         goodsCount = data[1]['data']['cartList'].length;
         initLoading = false;
         userToken = token;
+        chooseSizeIndex = sizeIndex;
+        chooseSizeStr = sizeNameList.join('、');
+
     });
     // Map goodsStockPriceAny =
     //     getGoodsMsgById(goodsMsg['productList'], sizeId.join('_'));
@@ -337,9 +346,9 @@ class _GoodsDetail extends State<GoodsDetail> {
           buildOneWidget(
             buildGoodsMsg(context),
           ),
-          // buildOneWidget(
-          //   buildSize(context),
-          // ),
+          buildOneWidget(
+            buildSize(context),
+          ),
           // buildOneWidget(
           //   buildComment(context),
           // ),
@@ -488,7 +497,7 @@ class _GoodsDetail extends State<GoodsDetail> {
           ),
           Text(
             // TODO: 商品价格
-            '￥${goodsMsgs['coffee']['value']}',
+            '￥${price}',
             style: TextStyle(
               color: Colors.red,
               fontSize: Rem.getPxToRem(40),
@@ -499,55 +508,55 @@ class _GoodsDetail extends State<GoodsDetail> {
     );
   }
 
-  // 选择规格
-  // Widget buildSize(BuildContext context) {
-  //   return InkResponse(
-  //     child: Container(
-  //       height: Rem.getPxToRem(100),
-  //       margin: EdgeInsets.only(top: 10),
-  //       decoration: BoxDecoration(
-  //         color: Colors.white,
-  //       ),
-  //       child: Row(
-  //         children: <Widget>[
-  //           Padding(
-  //             padding: EdgeInsets.all(5),
-  //             child: Text(
-  //               '已选',
-  //               style: TextStyle(color: Colors.grey),
-  //             ),
-  //           ),
-  //           Expanded(
-  //             child: Padding(
-  //               padding: EdgeInsets.all(5),
-  //               child: Row(
-  //                 children: <Widget>[
-  //                   Expanded(
-  //                     child: Text(
-  //                       '${chooseSizeStr.length > 0 ? chooseSizeStr : '该商品没有size!'}',
-  //                       overflow: TextOverflow.ellipsis,
-  //                     ),
-  //                   ),
-  //                   // Text('x$goodsNumber'),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //           Padding(
-  //             padding: EdgeInsets.all(5),
-  //             child: Icon(
-  //               Icons.keyboard_arrow_right,
-  //               color: Colors.grey,
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //     onTap: () {
-  //       buildSizeModel(context);
-  //     },
-  //   );
-  // }
+  //选择规格
+  Widget buildSize(BuildContext context) {
+    return InkResponse(
+      child: Container(
+        height: Rem.getPxToRem(100),
+        margin: EdgeInsets.only(top: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+        ),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(5),
+              child: Text(
+                '已选',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(5),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        '${chooseSizeStr.length > 0 ? chooseSizeStr : '该商品没有选择size!'}',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    // Text('x$goodsNumber'),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(5),
+              child: Icon(
+                Icons.keyboard_arrow_right,
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+      ),
+      onTap: () {
+        buildSizeModel(context);
+      },
+    );
+  }
 
   // 商品评论
   // Widget buildComment(BuildContext context) {
@@ -666,200 +675,206 @@ class _GoodsDetail extends State<GoodsDetail> {
   //   );
   // }
 
-  // // 商品规格弹窗
-  // buildSizeModel(BuildContext context) {
-  //   return showModalBottomSheetOp(
-  //     backgroundColor: Colors.transparent,
-  //     context: context,
-  //     // 这里不知道为什么会重复执行TODO优化
-  //     // 因为动画问题
-  //     builder: (BuildContext context) {
-  //       return StatefulBuilder(builder: (context1, setstate1) {
-  //         return Container(
-  //           padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-  //           decoration: BoxDecoration(
-  //             color: Colors.white,
-  //             borderRadius: BorderRadius.vertical(
-  //               top: Radius.circular(10.0),
-  //             ),
-  //           ),
-  //           child: Column(
-  //             children: <Widget>[
-  //               // close按钮
-  //               Align(
-  //                 alignment: Alignment.centerRight,
-  //                 child: InkResponse(
-  //                   child: Container(
-  //                     width: 30,
-  //                     height: 30,
-  //                     decoration: BoxDecoration(
-  //                       color: Colors.grey[100],
-  //                       borderRadius: BorderRadius.all(
-  //                         Radius.circular(30),
-  //                       ),
-  //                     ),
-  //                     child: Center(
-  //                       child: Icon(
-  //                         Icons.close,
-  //                         color: Colors.grey[500],
-  //                       ),
-  //                     ),
-  //                   ),
-  //                   onTap: () {
-  //                     Navigator.pop(context);
-  //                   },
-  //                 ),
-  //               ),
-  //               // 商品图片
-  //               Container(
-  //                 margin: EdgeInsets.only(top: 10),
-  //                 child: Column(
-  //                   children: <Widget>[
-  //                     Container(
-  //                       height: 100,
-  //                       child: Row(
-  //                         children: <Widget>[
-  //                           Container(
-  //                             width: 100,
-  //                             height: 100,
-  //                             child: CachedNetworkImage(
-  //                               imageUrl: goodsMsgs['coffee']['img'],
-  //                               fit: BoxFit.cover,
-  //                             ),
-  //                           ),
-  //                           Expanded(
-  //                             child: Container(
-  //                               padding: EdgeInsets.only(left: 10),
-  //                               child: Column(
-  //                                 children: <Widget>[
-  //                                   Container(
-  //                                     height: 75,
-  //                                     child: Align(
-  //                                       alignment: Alignment.bottomLeft,
-  //                                       child: Text.rich(
-  //                                         TextSpan(
-  //                                           children: [
-  //                                             TextSpan(
-  //                                               text: "￥",
-  //                                               style: TextStyle(
-  //                                                 color: Colors.red,
-  //                                                 fontSize: 16,
-  //                                               ),
-  //                                             ),
-  //                                             TextSpan(
-  //                                               text:
-  //                                                   '${goodsMsgs['coffee']['value']}',
-  //                                               style: TextStyle(
-  //                                                 color: Colors.red,
-  //                                                 fontWeight: FontWeight.bold,
-  //                                                 fontSize: 25,
-  //                                               ),
-  //                                             ),
-  //                                           ],
-  //                                         ),
-  //                                       ),
-  //                                     ),
-  //                                   ),
-  //                                   Container(
-  //                                     height: 25,
-  //                                     child: Align(
-  //                                         alignment: Alignment.centerLeft,
-  //                                         child: Text(
-  //                                           '${chooseSizeStr.length > 0 ? chooseSizeStr : goodsMsgs["coffee"]['name']}',
-  //                                           style:
-  //                                               TextStyle(color: Colors.grey),
-  //                                           overflow: TextOverflow.ellipsis,
-  //                                         )),
-  //                                   ),
-  //                                 ],
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ],
-  //                       ),
-  //                     )
-  //                   ],
-  //                 ),
-  //               ),
-  //               //商品规格
-  //               buildSizeItem(context, setstate1),
-  //               // 商品数量
-  //               buildSizeNun(context, setstate1),
-  //               // 下单或加入购物车
-  //               Container(
-  //                 height: Rem.getPxToRem(80),
-  //                 child: Row(
-  //                   children: <Widget>[
-  //                     Expanded(
-  //                       child: Container(
-  //                         padding: EdgeInsets.fromLTRB(
-  //                           Rem.getPxToRem(20),
-  //                           0,
-  //                           Rem.getPxToRem(10),
-  //                           0,
-  //                         ),
-  //                         child: Center(
-  //                           child: Container(
-  //                             child: Center(
-  //                               child: Text(
-  //                                 '加入购物车',
-  //                                 style: TextStyle(
-  //                                   color: Colors.white,
-  //                                   fontWeight: FontWeight.bold,
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                             decoration: BoxDecoration(
-  //                               color: Colors.red,
-  //                               borderRadius: BorderRadius.all(
-  //                                 Radius.circular(Rem.getPxToRem(80)),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ),
-  //                     Expanded(
-  //                       child: Container(
-  //                         padding: EdgeInsets.fromLTRB(
-  //                           Rem.getPxToRem(10),
-  //                           0,
-  //                           Rem.getPxToRem(20),
-  //                           0,
-  //                         ),
-  //                         child: Center(
-  //                           child: Container(
-  //                             child: Center(
-  //                               child: Text(
-  //                                 '立即购买',
-  //                                 style: TextStyle(
-  //                                   color: Colors.white,
-  //                                   fontWeight: FontWeight.bold,
-  //                                 ),
-  //                               ),
-  //                             ),
-  //                             width: double.infinity,
-  //                             height: double.infinity,
-  //                             decoration: BoxDecoration(
-  //                               color: Colors.orange,
-  //                               borderRadius: BorderRadius.all(
-  //                                 Radius.circular(Rem.getPxToRem(80)),
-  //                               ),
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     )
-  //                   ],
-  //                 ),
-  //               )
-  //             ],
-  //           ),
-  //         );
-  //       });
-  //     },
-  //   );
-  // }
+  // 商品规格弹窗
+  buildSizeModel(BuildContext context) {
+    return showModalBottomSheetOp(
+      backgroundColor: Colors.transparent,
+      context: context,
+      // 这里不知道为什么会重复执行TODO优化
+      // 因为动画问题
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context1, setstate1) {
+          return Container(
+            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(10.0),
+              ),
+            ),
+            child: Column(
+              children: <Widget>[
+                // close按钮
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: InkResponse(
+                    child: Container(
+                      width: 30,
+                      height: 30,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(30),
+                        ),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.grey[500],
+                        ),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ),
+                // 商品图片
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        height: 100,
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              width: 100,
+                              height: 100,
+                              child: CachedNetworkImage(
+                                imageUrl: goodsMsgs['coffee']['img'],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Expanded(
+                              child: Container(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Column(
+                                  children: <Widget>[
+                                    Container(
+                                      height: 75,
+                                      child: Align(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: "￥",
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    '${price}',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 25,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 25,
+                                      child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            '${chooseSizeStr.length > 0 ? chooseSizeStr : goodsMsgs["coffee"]['name']}',
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                            overflow: TextOverflow.ellipsis,
+                                          )),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                //商品规格
+                buildSizeItem(context, setstate1),
+                // 商品数量
+                //buildSizeNun(context, setstate1),
+                // 下单或加入购物车
+                Container(
+                  height: Rem.getPxToRem(80),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(
+                            Rem.getPxToRem(20),
+                            0,
+                            Rem.getPxToRem(10),
+                            0,
+                          ),
+                          child: GestureDetector(
+                            onTap: (){
+                              AddCart(goodsMsgs["coffee"]['uuid'], spec);
+                            },
+                            child: Center(
+                                  child: Container(
+                                    child: Center(
+                                      child: Text(
+                                        '加入购物车',
+                                      style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(Rem.getPxToRem(80)),
+                                ),
+                              ),
+                            ),
+                          ),
+                          )
+
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(
+                            Rem.getPxToRem(10),
+                            0,
+                            Rem.getPxToRem(20),
+                            0,
+                          ),
+                          child: Center(
+                            child: Container(
+                              child: Center(
+                                child: Text(
+                                  '立即购买',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              width: double.infinity,
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.orange,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(Rem.getPxToRem(80)),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+      },
+    );
+  }
 
   // Widget buildSizeNun(BuildContext context, setstate1) {
   //   return Padding(
@@ -899,117 +914,122 @@ class _GoodsDetail extends State<GoodsDetail> {
   // }
 
   // 规格选择器
-  // Widget buildSizeItem(BuildContext context, setstate1) {
-  //   var specificationList = goodsMsgs['spec'];
-  //   List<Widget> list = [];
-  //   for (var i = 0; i < specificationList.length; i++) {
-  //     List<Widget> sizeItemList = [];
-  //     for (var j = 0; j < specificationList.length; j++) {
-  //       if (j == chooseSizeIndex[i]) {
-  //         sizeItemList.add(
-  //           Container(
-  //             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-  //             decoration: BoxDecoration(
-  //               color: Color.fromARGB(10, 240, 10, 32),
-  //               border: Border.all(color: Colors.red),
-  //               borderRadius: BorderRadius.all(
-  //                 Radius.circular(30),
-  //               ),
-  //             ),
-  //             child: Text(
-  //               specificationList[i]['valueList'][j]['value'],
-  //               style: TextStyle(color: Colors.red),
-  //             ),
-  //           ),
-  //         );
-  //       } else {
-  //         sizeItemList.add(InkResponse(
-  //           child: Container(
-  //             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
-  //             decoration: BoxDecoration(
-  //               color: Colors.grey[200],
-  //               border: Border.all(color: Colors.grey[200]),
-  //               borderRadius: BorderRadius.all(
-  //                 Radius.circular(30),
-  //               ),
-  //             ),
-  //             child: Text(specificationList[i]['valueList'][j]['value']),
-  //           ),
-  //           onTap: () {
-  //             chooseSizeIndex[i] = j;
-  //             setstate1(() {});
-  //             Map data = getSizeMsgByIndex(chooseSizeIndex);
-  //             setState(() {
-  //               chooseSizeIndex = chooseSizeIndex;
-  //               chooseSizeStr = data['chooseSizeStr'];
-  //               goodsNumber = 0;
-  //               goodsMax = data['goodsStockPrice']['goods_number'];
-  //               goodsStockPrice = data['goodsStockPrice'];
-  //             });
-  //           },
-  //         ));
-  //       }
-  //     }
-  //     list.add(
-  //       Padding(
-  //         padding: EdgeInsets.symmetric(vertical: 5),
-  //         child: Column(
-  //           children: <Widget>[
-  //             Container(
-  //               width: double.infinity,
-  //               padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-  //               margin: EdgeInsets.only(bottom: 5),
-  //               child: Text(
-  //                 specificationList[i]['name'],
-  //                 style: TextStyle(fontWeight: FontWeight.bold),
-  //               ),
-  //             ),
-  //             Container(
-  //               width: double.infinity,
-  //               child: Wrap(
-  //                 spacing: 20,
-  //                 runSpacing: 10,
-  //                 children: sizeItemList,
-  //               ),
-  //             )
-  //           ],
-  //         ),
-  //       ),
-  //     );
-  //   }
-  //   return Column(
-  //     children: list,
-  //   );
-  // }
+  Widget buildSizeItem(BuildContext context, setstate1) {
+    var specificationList = goodsMsgs['coffee']['spec'];
+    List<Widget> list = [];
+    if(specificationList == null) {
+      return Container();
+    }
+    for (var i = 0; i < specificationList.length; i++) {
+      List<Widget> sizeItemList = [];
+      for (var j = 0; j < specificationList[i]['coffee_spec_detail'].length; j++) {
+        if (j == chooseSizeIndex[i]) {
+          sizeItemList.add(
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              decoration: BoxDecoration(
+                color: Color.fromARGB(10, 240, 10, 32),
+                border: Border.all(color: Colors.red),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(30),
+                ),
+              ),
+              child: Text(
+                specificationList[i]['coffee_spec_detail'][j]['value'],
+                style: TextStyle(color: Colors.red),
+              ),
+            ),
+          );
+        } else {
+          sizeItemList.add(InkResponse(
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                border: Border.all(color: Colors.grey[200]),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(30),
+                ),
+              ),
+              child: Text(specificationList[i]['coffee_spec_detail'][j]['value']),
+            ),
+            onTap: () {
+              chooseSizeIndex[i] = j;
+              setstate1(() {});
+              Map data = getSizeMsgByIndex(chooseSizeIndex);
+              setState(() {
+                chooseSizeIndex = chooseSizeIndex;
+                chooseSizeStr = data['chooseSizeStr'];
+                price = specificationList[i]['coffee_spec_detail'][j]['price'];
+                spec += specificationList[i]['coffee_spec_detail'][j]['value'] + ';';
+                // goodsNumber = 0;
+                // goodsMax = data['goodsStockPrice']['goods_number'];
+                //goodsStockPrice = data['goodsStockPrice'];
+              });
+            },
+          ));
+        }
+      }
+      list.add(
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 5),
+          child: Column(
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                margin: EdgeInsets.only(bottom: 5),
+                child: Text(
+                  specificationList[i]['name'],
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                child: Wrap(
+                  spacing: 20,
+                  runSpacing: 10,
+                  children: sizeItemList,
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    }
+    return Column(
+      children: list,
+    );
+  }
 
   // 通过下标获取商品的价格跟规格名称
-  // getSizeMsgByIndex(chooseSizeIndex) {
-  //   var specificationList = goodsMsgs['specificationList'];
-  //   List sizeStrList = [];
-  //   List sizeIdList = [];
-  //   for (var i = 0; i < specificationList.length; i++) {
-  //     for (var j = 0; j < specificationList[i]['valueList'].length; j++) {
-  //       if (chooseSizeIndex[i] == j) {
-  //         sizeStrList.add(specificationList[i]['valueList'][j]['value']);
-  //         sizeIdList.add(specificationList[i]['valueList'][j]['id']);
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   Map goodsStockAndPrice =
-  //       getGoodsMsgById(goodsMsgs['productList'], sizeIdList.join('_'));
-  //   return {
-  //     'chooseSizeStr': sizeStrList.join('、'),
-  //     'goodsStockPrice': goodsStockAndPrice,
-  //   };
-  // }
+  getSizeMsgByIndex(chooseSizeIndex) {
+    var specificationList = goodsMsgs['coffee']['spec'];
+    List sizeStrList = [];
+    List sizeIdList = [];
+    for (var i = 0; i < specificationList.length; i++) {
+      for (var j = 0; j < specificationList[i]['coffee_spec_detail'].length; j++) {
+        if (chooseSizeIndex[i] == j) {
+          sizeStrList.add(specificationList[i]['coffee_spec_detail'][j]['value']);
+          sizeIdList.add(specificationList[i]['coffee_spec_detail'][j]['ID']);
+          break;
+        }
+      }
+    }
+    // Map goodsStockAndPrice =
+    //     getGoodsMsgById(goodsMsgs['productList'], sizeIdList.join('_'));
+    return {
+      'chooseSizeStr': sizeStrList.join('、'),
+      // 'goodsStockPrice': goodsStockAndPrice,
+    };
+  }
 
   // 获取某规格的商品信息
-//   getGoodsMsgById(List productList, String id) {
-//     for (int i = 0; i < productList.length; i++) {
-//       if (productList[i]['goods_specification_ids'] == id) {
-//         return productList[i];
-//       }
-//     }
-//   }
+  // getGoodsMsgById(List productList, String id) {
+  //   for (int i = 0; i < productList.length; i++) {
+  //     if (productList[i]['goods_specification_ids'] == id) {
+  //       return productList[i];
+  //     }
+  //   }
+  // }
 }

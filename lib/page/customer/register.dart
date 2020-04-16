@@ -1,6 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/method/login.dart';
+import 'package:flutter_shop/router/index.dart';
+import 'package:flutter_shop/utils/fluttertoast.dart';
+import 'package:flutter_shop/utils/validator.dart';
 class Register extends StatefulWidget {
   @override
   _RegisterState createState() => _RegisterState();
@@ -17,8 +21,14 @@ TextEditingController _nicknameController = new TextEditingController();
   void initState() {
     super.initState();
   }
-  void register(context) async {
-
+  Future register(context) async {
+    var data  = await registerWithMobile(_unameController.text, _pwdController.text,_nicknameController.text);
+    if(data['success']) {
+      ToastUtils.showToast(data['msg']);
+      Router.pop(context);
+    } else {
+      ToastUtils.showToast(data['msg']);
+    }
   }
 
   @override
@@ -63,10 +73,12 @@ TextEditingController _nicknameController = new TextEditingController();
                       validator: (v) {
                         if (v.trim().length == 0) {
                           return '手机号码不能为空';
+                        } else if (!ValidatorUtil.isChinaPhoneLegal(v)){
+                          return '该手机号非中国手机号';
                         } else {
                           return null;
                         }
-                      }),
+                      }),                  
                   TextFormField(
                       controller: _pwdController,
                       decoration: InputDecoration(
@@ -114,6 +126,7 @@ TextEditingController _nicknameController = new TextEditingController();
                               if ((_formKey.currentState as FormState)
                                   .validate()) {
                                 //验证通过提交数据
+                                register(context);
                               }
                             },
                           ),

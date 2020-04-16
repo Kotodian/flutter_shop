@@ -3,6 +3,7 @@ var webApi = {
   'categoryList': baseUrl + '/base/coffeetype',
   'cusUpload': baseUrl + '/cus/upload',
   'cusLogin': baseUrl + '/base/cuslogin',
+  'cusRegister': baseUrl + '/base/cusRegister',
   'coffeeList': baseUrl + '/base/coffeebycode',
   'coffeeType': baseUrl + '/base/getcoffeetype',
   'coffeeDetail': baseUrl + '/base/getcoffeebyid',
@@ -14,5 +15,6 @@ var webApi = {
   'addressList': baseUrl + '/cus/getAddress',
   'addAddress': baseUrl + '/cus/addAddress',
   'orderList': baseUrl + '/cus/getOrder',
-  'orderDetail': baseUrl + '/cus/orderDetail'
+  'orderDetail': baseUrl + '/cus/orderDetail',
+  'addOrder': baseUrl + '/cus/addOrder'
 };

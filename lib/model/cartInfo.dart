@@ -2,6 +2,7 @@ class CartInfo {
   int id;
   Coffee coffee;
   String coffeeId;
+  String spec;
   double value;
   int count;
   String userId;
@@ -14,7 +15,8 @@ class CartInfo {
       this.value,
       this.count,
       this.userId,
-      this.isCheck});
+      this.isCheck,
+      this.spec});
 
   CartInfo.fromJson(Map<String, dynamic> json) {
     id = json['ID'];
@@ -25,6 +27,7 @@ class CartInfo {
     count = json['count'];
     userId = json['user_id'];
     isCheck = json['isCheck'];
+    spec = json['spec'];
   }
 
   Map<String, dynamic> toJson() {
@@ -38,6 +41,7 @@ class CartInfo {
     data['count'] = this.count;
     data['user_id'] = this.userId;
     data['isCheck'] = this.isCheck;
+    data['spec'] = this.spec;
     return data;
   }
 }

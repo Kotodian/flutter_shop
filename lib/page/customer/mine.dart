@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/method/uploadimage.dart';
 import 'package:flutter_shop/utils/cache.dart';
+import 'package:flutter_shop/utils/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_shop/model/index.dart';
@@ -13,7 +14,7 @@ import 'package:flutter_shop/router/index.dart';
 
 class Mine extends StatelessWidget {
   final List<Map<String, dynamic>> gridList = [
-    {'name': '地址管理', 'icon': 'assets/images/address.png','route':''},
+    {'name': '地址管理', 'icon': 'assets/images/address.png','route':'/orderMap'},
     {'name': '我的订单', 'icon': 'assets/images/order.png','route':'/orderList'},
     {'name': '客服咨询', 'icon': 'assets/images/kefu.png','route':''},
     {'name': '意见反馈', 'icon': 'assets/images/issure.png','route':''},
@@ -30,6 +31,8 @@ class Mine extends StatelessWidget {
       model.setToken(null);
     }else if(item == '我的订单') {
       Router.push(gridList[index]['route'], context,{'orderType': 1});
+    } else {
+      Router.push(gridList[index]['route'], context);
     }
   }
   // 打开底部菜单
@@ -45,9 +48,16 @@ class Mine extends StatelessWidget {
     var image = await ImagePicker.pickImage(source: ImageSource.gallery);
     if(image != null) {
       var response = await uploadImage(image,model.token);
-      var sq = await SpUtil.getInstance();
-      sq.putString('userImg',response['data']['user']['image']);
-      model.setImage(response['data']['user']['image']);
+      if(response['success']) {
+        var sq = await SpUtil.getInstance();
+        sq.putString('userImg',response['data']['user']['image']);
+        model.setImage(response['data']['user']['image']);
+        ToastUtils.showToast(response['msg']);
+      } else {
+        ToastUtils.showToast('上传头像失败');
+      }
+    } else {
+      ToastUtils.showToast('未选择图片');
     }
   }
   // 拍照获取图片
@@ -56,9 +66,16 @@ class Mine extends StatelessWidget {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
     if(image != null) {
       var response = await uploadImage(image,model.token);
-      var sq = await SpUtil.getInstance();
-      sq.putString('userImg',response['data']['user']['image']);
-      model.setImage(response['data']['user']['image']);
+      if(response['success']) {
+        var sq = await SpUtil.getInstance();
+        sq.putString('userImg',response['data']['user']['image']);
+        model.setImage(response['data']['user']['image']);
+        ToastUtils.showToast(response['msg']);
+      } else {
+        ToastUtils.showToast('上传头像失败');
+      }
+    } else {
+        ToastUtils.showToast('未选择图片');
     }
   }
 
@@ -246,7 +263,7 @@ class Mine extends StatelessWidget {
             // 打开相册，选取照片
             getGalleryImage(context);
             // 关闭菜单
-            Navigator.of(context).pop();
+            Router.pop(context);
           },
         )
       ],
@@ -261,7 +278,7 @@ class Mine extends StatelessWidget {
         ),
         onPressed: () {
           // 关闭菜单
-          Navigator.of(context).pop();
+            Router.pop(context);
         },
       ),
     );

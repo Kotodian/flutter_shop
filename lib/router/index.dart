@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_shop/page/customer/addAddress.dart';
 import 'package:flutter_shop/page/customer/address.dart';
 import 'package:flutter_shop/page/customer/mine.dart';
+import 'package:flutter_shop/page/customer/register.dart';
 import 'package:flutter_shop/page/goodsDetail/index.dart';
 import 'package:flutter_shop/page/home.dart';
 import 'package:flutter_shop/page/index.dart';
@@ -17,11 +18,12 @@ class Router {
     '/index': (context,{arguments}) => Home(), // 底部
     '/home': (context,{arguments}) => HomePage(), // 首页
     '/login': (context,{arguments}) => Login(), // 登录
+    '/register': (context,{arguments}) => Register(), //注册
     '/mine': (context,{arguments}) => Mine(), // 我的
     '/coffeeDetail': (context, {arguments}) => GoodsDetail(arguments: arguments), //咖啡详情
     '/confirmOrder': (context,{arguments}) => OrderPage(), //确认订单
     '/orderMap': (context,{arguments}) => OrderMap(), // 地址管理
-    '/addMap': (context,{arguments}) => AddMap(),
+    '/addMap': (context,{arguments}) => AddMap(), //添加地址
     '/orderList': (context,{arguments}) => OrderListPage(arguments: arguments), // 订单管理
     '/orderDetail': (context,{arguments}) => OrderDetailPage(arguments: arguments) //订单详情
   };

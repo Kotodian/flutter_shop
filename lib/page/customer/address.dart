@@ -5,6 +5,7 @@ import 'package:flutter_shop/method/address.dart';
 import 'package:flutter_shop/model/address.dart';
 import 'package:flutter_shop/router/index.dart';
 import 'package:flutter_shop/utils/cache.dart';
+import 'package:flutter_shop/utils/fluttertoast.dart';
 
 
 
@@ -31,11 +32,17 @@ class OrderMapState extends State<OrderMap> {
 	"user_id": userId
   };
   var response = await getAddressList(data);
-  this.setState(() {
-    response['data']['addressList'].forEach((item){
-      addressList.add(Address.fromJson(item));
+  if(response['success']) {
+      this.setState(() {
+        response['data']['addressList'].forEach((item){
+        addressList.add(Address.fromJson(item));
+      });
     });
-  });
+    ToastUtils.showToast(response['msg']);
+  }else {
+    ToastUtils.showToast('获取地址失败');
+  }
+
 }
   @override
   void initState() {

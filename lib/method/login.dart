@@ -8,3 +8,9 @@ Future loginWithMobile({String username,String password}) async {
   var response = await HttpUtil().post(url,data:jsonEncode({"username": username,"password":password}));
   return response;
 }
+
+Future registerWithMobile(String username,String password,String nickname) async {
+  var url = webApi['cusRegister'];
+  var response = await HttpUtil().post(url,data:jsonEncode({"username": username,"password":password,"nickname": nickname}));
+  return response;
+}

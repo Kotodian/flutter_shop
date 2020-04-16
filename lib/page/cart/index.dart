@@ -271,7 +271,7 @@ class CartPageState extends State<CartPage> {
                                                   child: InkWell(
                                                     onTap: () {
                                                       item.count++;
-                                                      AddCart(item.coffeeId);
+                                                      AddCart(item.coffeeId,item.spec);
                                                       item.value += item.coffee.value;
                                                       this.setState(() {
                                                         list = this.list;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/utils/fluttertoast.dart';
 import 'package:flutter_shop/utils/rem.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -23,16 +24,22 @@ class _Login extends State<Login> {
     final sq = await SpUtil.getInstance();
     final model = Provider.of<Model>(context);
     var data = await loginWithMobile(username: _unameController.text, password: _pwdController.text);
-    
+    if(data['success']) {
+      // 将一些东西加入缓存
+      sq.putString('token', data['data']['token']);
+      sq.putString('userName', data['data']['user']['username']);
+      sq.putString('userImg', data['data']['user']['image']);
+      sq.putString('userId', data['data']['user']['uuid']);
+      model.setToken(data['data']['token']);
+      model.setUserName(data['data']['user']['nickname']);
+      model.setImage(data['data']['user']['image']);
+      // 消息提示
+      ToastUtils.showToast(data['msg']);
+      Router.pop(context);
+    }else {
+      ToastUtils.showToast(data['msg']);
+    }
     // print(data);
-    sq.putString('token', data['data']['token']);
-    sq.putString('userName', data['data']['user']['username']);
-    sq.putString('userImg', data['data']['user']['image']);
-    sq.putString('userId', data['data']['user']['uuid']);
-    model.setToken(data['data']['token']);
-    model.setUserName(data['data']['user']['nickname']);
-    model.setImage(data['data']['user']['image']);
-    Router.pop(context);
   }
 
   @override
@@ -121,6 +128,17 @@ class _Login extends State<Login> {
                             },
                           ),
                         ),
+                        Expanded(
+                          child: RaisedButton(
+                            padding: EdgeInsets.all(15.0),
+                            child: Text("注册"),
+                            color: Theme.of(context).primaryColor,
+                            textColor: Colors.white,
+                            onPressed: () {
+                                Router.push('/register', context);
+                            },
+                          ),
+                        ),                        
                       ],
                     ),
                   )

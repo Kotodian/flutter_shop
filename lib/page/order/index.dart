@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/method/address.dart';
 import 'package:flutter_shop/method/cart.dart';
+import 'package:flutter_shop/method/order.dart';
 import 'package:flutter_shop/model/address.dart';
 import 'package:flutter_shop/model/cartInfo.dart';
 import 'package:flutter_shop/router/index.dart';
@@ -311,7 +312,20 @@ Future getUserCart() async {
               )
             ])))
       ]),
-      bottomNavigationBar: Container(
+      bottomNavigationBar:GestureDetector(
+        onTap: () async{
+          var data = {
+            'cartList': cartList,
+            'consignee': currentAddress.consignee,
+            'spec_address': currentAddress.specAddress,
+            'orderType': 1,
+            'phone': currentAddress.phone
+          };
+          await AddUserOrder(data);
+          // TODO: 返回值 跳转到订单详情
+          Router.push('/orderDetail', context);
+        },
+        child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
         ),
@@ -323,6 +337,8 @@ Future getUserCart() async {
           style: TextStyle(fontSize: 18.0, color: Colors.white),
         ),
       ),
+      )
+
     );
   }
 }
