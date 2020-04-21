@@ -215,7 +215,7 @@ class _GoodsDetail extends State<GoodsDetail> {
                                     ),
                                   ),
                                   child: Text(
-                                    goodsCount.toString(),// TODO: 商品数量
+                                    goodsCount.toString(),
                                     style: TextStyle(
                                       color: Colors.red,
                                       fontSize: Rem.getPxToRem(20),
@@ -272,43 +272,6 @@ class _GoodsDetail extends State<GoodsDetail> {
               ),
             ),
             ) 
-          ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () async{
-                // TODO:直接购买
-              },
-              child:Container(
-              padding: EdgeInsets.fromLTRB(
-                Rem.getPxToRem(10),
-                0,
-                Rem.getPxToRem(20),
-                0,
-              ),
-              child: Center(
-                child: Container(
-                  child: Center(
-                    child: Text(
-                      '立即购买',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(Rem.getPxToRem(90)),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            )
-            
           )
         ],
       ),
@@ -341,7 +304,7 @@ class _GoodsDetail extends State<GoodsDetail> {
             pinned: true,
             delegate: SliverCustomHeaderDelegate(
               title:
-                  initLoading ? 'loading...' : goodsMsgs['coffee']['name'],// TODO: 商品名称
+                  initLoading ? 'loading...' : goodsMsgs['coffee']['name'],
               collapsedHeight: Rem.getPxToRem(100),
               expandedHeight: Rem.getPxToRem(700),
               paddingTop: MediaQuery.of(context).padding.top,
@@ -497,7 +460,7 @@ class _GoodsDetail extends State<GoodsDetail> {
           Padding(
             padding: EdgeInsets.only(bottom: 10),
             child: Text(
-              goodsMsgs['coffee']['name'],// TODO: 商品名称
+              goodsMsgs['coffee']['name'],
               style: TextStyle(
                 fontSize: Rem.getPxToRem(40),
               ),
@@ -843,7 +806,11 @@ class _GoodsDetail extends State<GoodsDetail> {
                         ),
                       ),
                       Expanded(
-                        child: Container(
+                        child: GestureDetector(
+                          onTap: () {
+                            Router.push('/cofirmOrder', context);
+                          },
+                          child:Container(
                           padding: EdgeInsets.fromLTRB(
                             Rem.getPxToRem(10),
                             0,
@@ -872,6 +839,8 @@ class _GoodsDetail extends State<GoodsDetail> {
                             ),
                           ),
                         ),
+                        )
+                        
                       )
                     ],
                   ),

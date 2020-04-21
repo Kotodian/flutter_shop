@@ -9,6 +9,7 @@ import 'package:flutter_shop/model/cartInfo.dart';
 import 'package:flutter_shop/router/index.dart';
 import 'package:flutter_shop/utils/cache.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_shop/utils/fluttertoast.dart';
 
 
 
@@ -312,33 +313,56 @@ Future getUserCart() async {
               )
             ])))
       ]),
-      bottomNavigationBar:GestureDetector(
-        onTap: () async{
-          var data = {
-            'cartList': cartList,
-            'consignee': currentAddress.consignee,
-            'spec_address': currentAddress.specAddress,
-            'orderType': 1,
-            'phone': currentAddress.phone
-          };
-          await AddUserOrder(data);
-          // TODO: 返回值 跳转到订单详情
-          Router.push('/orderDetail', context);
-        },
-        child: Container(
+      bottomNavigationBar:Container(
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
         ),
         alignment: Alignment.center,
         width: MediaQuery.of(context).size.width - 40,
         height: 42.0,
-        child: Text(
-          '去支付',
-          style: TextStyle(fontSize: 18.0, color: Colors.white),
-        ),
+        child: Column(
+          children: <Widget>[
+            GestureDetector(
+            onTap: () async{
+              var data = {
+            'cartList': cartList,
+            'consignee': currentAddress.consignee,
+            'spec_address': currentAddress.specAddress,
+            'orderType': 2,
+            'phone': currentAddress.phone
+          };
+           var response = await AddUserOrder(data);
+            ToastUtils.showToast("支付成功");
+            // TODO: 返回值 跳转到订单详情
+            Router.push('/orderDetail', context);
+            Router.push('/orderDetail', context,{'orderId': response['data']['order_id']});
+            },
+            child: Text(
+            '确认支付',
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
+            ),
+            ),
+            GestureDetector(
+              onTap: () async{
+              var data = {
+            'cartList': cartList,
+            'consignee': currentAddress.consignee,
+            'spec_address': currentAddress.specAddress,
+            'orderType': 1,
+            'phone': currentAddress.phone
+          };
+            var response = await AddUserOrder(data);
+            ToastUtils.showToast("支付失败");
+            Router.push('/orderDetail', context,{'orderId': response['data']['order_id']});
+            },
+            child: Text(
+            '再想想',
+            style: TextStyle(fontSize: 18.0, color: Colors.white),
+            ),
+            )
+          ],
+        )
       ),
-      )
-
     );
   }
 }
