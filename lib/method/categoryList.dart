@@ -54,5 +54,17 @@ Future getCoffeeByUUID(String uuid) async {
       var response = await HttpUtil().post(url,data: jsonEncode(data));
       return response;
     } catch (e) {
+      print(e);
+    }
+}
+
+
+Future getCoffeeSpecValue(data) async {
+    try {
+      var url = webApi['coffeeValue'];
+      var response = await HttpUtil().post(url,data: jsonEncode(data));
+      return response;
+    } catch (e) {
+      print(e);
     }
 }

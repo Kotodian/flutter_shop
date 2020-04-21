@@ -16,5 +16,6 @@ var webApi = {
   'addAddress': baseUrl + '/cus/addAddress',
   'orderList': baseUrl + '/cus/getOrder',
   'orderDetail': baseUrl + '/cus/orderDetail',
-  'addOrder': baseUrl + '/cus/addOrder'
+  'addOrder': baseUrl + '/cus/addOrder',
+  'coffeeValue': baseUrl + '/cus/getprice'
 };

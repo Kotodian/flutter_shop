@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_shop/method/cart.dart';
 import 'package:flutter_shop/method/categoryList.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_shop/method/order.dart';
 import 'package:flutter_shop/utils/rem.dart';
 import 'package:flutter_shop/utils/cache.dart';
 import 'package:flutter_shop/widget/SliverCustomHeader_widget.dart';
@@ -52,7 +53,14 @@ class _GoodsDetail extends State<GoodsDetail> {
     super.initState();
     getInitData();
   }
+  Future orderNow() async {
+    var response = await getCartList();
+    var data = {
+      'cartList': response['data']['cartList']
 
+    };
+    await AddUserOrder(data);
+  }
   getInitData() async {
     String id = widget.arguments['uuid'];
     print(id);
@@ -234,7 +242,7 @@ class _GoodsDetail extends State<GoodsDetail> {
           Expanded(
             child: GestureDetector(
               onTap: () async{
-                  // TODO:直接购买 
+                  AddCart(goodsMsgs['coffee']['uuid'], chooseSizeStr); 
               },
               child:  Container(
               padding: EdgeInsets.fromLTRB(
@@ -268,7 +276,7 @@ class _GoodsDetail extends State<GoodsDetail> {
           Expanded(
             child: GestureDetector(
               onTap: () async{
-                // TODO:添加到购物车
+                // TODO:直接购买
               },
               child:Container(
               padding: EdgeInsets.fromLTRB(
@@ -960,7 +968,7 @@ class _GoodsDetail extends State<GoodsDetail> {
               setState(() {
                 chooseSizeIndex = chooseSizeIndex;
                 chooseSizeStr = data['chooseSizeStr'];
-                price = specificationList[i]['coffee_spec_detail'][j]['price'];
+                price = data['price'];
                 spec += specificationList[i]['coffee_spec_detail'][j]['value'] + ';';
                 // goodsNumber = 0;
                 // goodsMax = data['goodsStockPrice']['goods_number'];
@@ -1003,7 +1011,7 @@ class _GoodsDetail extends State<GoodsDetail> {
   }
 
   // 通过下标获取商品的价格跟规格名称
-  getSizeMsgByIndex(chooseSizeIndex) {
+  getSizeMsgByIndex(chooseSizeIndex) async{
     var specificationList = goodsMsgs['coffee']['spec'];
     List sizeStrList = [];
     List sizeIdList = [];
@@ -1016,10 +1024,16 @@ class _GoodsDetail extends State<GoodsDetail> {
         }
       }
     }
+    var data = {
+      'id': sizeIdList,
+      'coffeeId': goodsMsgs['coffee']['uuid']
+    };
+    var response = await getCoffeeSpecValue(data);
     // Map goodsStockAndPrice =
     //     getGoodsMsgById(goodsMsgs['productList'], sizeIdList.join('_'));
     return {
       'chooseSizeStr': sizeStrList.join('、'),
+      'price': response['data']['price']
       // 'goodsStockPrice': goodsStockAndPrice,
     };
   }

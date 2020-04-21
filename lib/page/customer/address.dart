@@ -40,7 +40,7 @@ class OrderMapState extends State<OrderMap> {
     });
     ToastUtils.showToast(response['msg']);
   }else {
-    ToastUtils.showToast('获取地址失败');
+    ToastUtils.showToast('获取地址失败,请添加地址');
   }
 
 }
