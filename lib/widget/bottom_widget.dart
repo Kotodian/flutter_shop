@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 List<Widget> bottomNavigationBar = <Widget>[
   Icon(Icons.home),
   Icon(Icons.dashboard),
-  Icon(Icons.near_me),
   Icon(Icons.shopping_cart),
   Icon(Icons.person)
 ];

@@ -6,6 +6,7 @@ import 'package:flutter_shop/model/cartInfo.dart';
 import 'package:flutter_shop/model/index.dart';
 import 'package:flutter_shop/router/index.dart';
 import 'package:flutter_shop/utils/cache.dart';
+import 'package:flutter_shop/utils/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -35,7 +36,12 @@ class CartPageState extends State<CartPage> {
     final sq = await SpUtil.getInstance();
     if(sq.getString('token') != '') {
     var data = await getCartList();
-    //print(data);
+    if(data['data']['msg'] == '授权已过期')
+    {
+      ToastUtils.showToast('授权已过期,请重新登录');
+      Router.push('/login', context);
+    }
+    print(data);
     if(mounted) {
       setState(() {
         data['data']['cartList'].forEach((item){
@@ -233,6 +239,10 @@ class CartPageState extends State<CartPage> {
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(fontSize: 16.0)),
+                                Text(item.spec,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 16.0)),                                    
                                 // item.attrList.specs != ''
                                 //     ? Container(
                                 //         decoration: BoxDecoration(
@@ -271,11 +281,11 @@ class CartPageState extends State<CartPage> {
                                                   child: InkWell(
                                                     onTap: () {
                                                       item.count++;
-                                                      AddCart(item.coffeeId,item.spec);
-                                                      item.value += item.coffee.value;
+                                                      AddCart(item.coffeeId,item.spec,item.value);
+                                                      item.value += item.value;
                                                       this.setState(() {
                                                         list = this.list;
-                                                        total = total + item.coffee.value;
+                                                        total = total + item.value;
                                                       });
                                                     },
                                                     splashColor: Colors.grey
@@ -305,11 +315,11 @@ class CartPageState extends State<CartPage> {
                                                       if (item.count >
                                                           1) {
                                                         item.count--;
-                                                        item.value -= item.coffee.value;
-                                                        ReduceCart(item.coffeeId);
+                                                        item.value -= item.value;
+                                                        ReduceCart(item.coffeeId,item.spec);
                                                         this.setState(() {
                                                           list = this.list;
-                                                          total = total - item.coffee.value;
+                                                          total = total - item.value;
                                                         });
                                                       }
                                                     },

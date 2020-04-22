@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_shop/config/web.config.dart';
+import 'package:flutter_shop/utils/cache.dart';
 import 'package:flutter_shop/utils/httpUtils.dart';
 
 // 获取分类列表
@@ -62,7 +63,9 @@ Future getCoffeeByUUID(String uuid) async {
 Future getCoffeeSpecValue(data) async {
     try {
       var url = webApi['coffeeValue'];
-      var response = await HttpUtil().post(url,data: jsonEncode(data));
+      var sq = await SpUtil.getInstance();
+      var token = sq.getString('token');
+      var response = await HttpUtil().postToken(url,token,data: jsonEncode(data));
       return response;
     } catch (e) {
       print(e);

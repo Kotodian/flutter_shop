@@ -3,6 +3,7 @@ import 'package:flutter_shop/method/cart.dart';
 import 'package:flutter_shop/method/categoryList.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_shop/method/order.dart';
+import 'package:flutter_shop/utils/fluttertoast.dart';
 import 'package:flutter_shop/utils/rem.dart';
 import 'package:flutter_shop/utils/cache.dart';
 import 'package:flutter_shop/widget/SliverCustomHeader_widget.dart';
@@ -44,7 +45,6 @@ class _GoodsDetail extends State<GoodsDetail> {
 
   int userHasCollect; //用户是否收藏0：否；1：是
 
-  String spec;
 
   var price; // 该商品价格
 
@@ -89,13 +89,18 @@ class _GoodsDetail extends State<GoodsDetail> {
     if(specificationList != null) {
       for (var i = 0; i < specificationList.length; i++) {
         sizeIndex.add(0);
-        sizeId.add(specificationList[i]['ID']);
-        sizeNameList.add(specificationList[i]['name']);
+        sizeId.add(specificationList[i]['coffee_spec_detail'][0]['ID']);
+        sizeNameList.add(specificationList[i]['coffee_spec_detail'][0]['value']);
       }
     }
+    print(sizeId);
+    var default_price = await getSpecValue({
+      'id': sizeId,
+      'coffeeId': id
+    });
     this.setState(() {
         goodsMsgs = goodsMsg;
-        price = goodsMsg['coffee']['value'];
+        price = default_price['data']['price'];
         goodsCount = data[1]['data']['cartList'].length;
         initLoading = false;
         userToken = token;
@@ -242,7 +247,12 @@ class _GoodsDetail extends State<GoodsDetail> {
           Expanded(
             child: GestureDetector(
               onTap: () async{
-                  AddCart(goodsMsgs['coffee']['uuid'], chooseSizeStr); 
+                  var res = await AddCart(goodsMsgs['coffee']['uuid'], chooseSizeStr,price); 
+                  if(res['success']) {
+                    ToastUtils.showToast("添加成功");
+                  }else {
+                    ToastUtils.showToast("添加失败");
+                  }
               },
               child:  Container(
               padding: EdgeInsets.fromLTRB(
@@ -707,54 +717,55 @@ class _GoodsDetail extends State<GoodsDetail> {
                                 fit: BoxFit.cover,
                               ),
                             ),
-                            Expanded(
-                              child: Container(
-                                padding: EdgeInsets.only(left: 10),
-                                child: Column(
-                                  children: <Widget>[
-                                    Container(
-                                      height: 75,
-                                      child: Align(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Text.rich(
-                                          TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: "￥",
-                                                style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text:
-                                                    '${price}',
-                                                style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 25,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 25,
-                                      child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            '${chooseSizeStr.length > 0 ? chooseSizeStr : goodsMsgs["coffee"]['name']}',
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                            overflow: TextOverflow.ellipsis,
-                                          )),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                            // Expanded(
+                            //   child: Container(
+                            //     padding: EdgeInsets.only(left: 10),
+                            //     child: Column(
+                            //       children: <Widget>[
+                            //         Container(
+                            //           height: 75,
+                            //           child: Align(
+                            //             alignment: Alignment.bottomLeft,
+                            //             child: Text.rich(
+                            //               TextSpan(
+                            //                 children: [
+                            //                   TextSpan(
+                            //                     text: "￥",
+                            //                     style: TextStyle(
+                            //                       color: Colors.red,
+                            //                       fontSize: 16,
+                            //                     ),
+                            //                   ),
+                            //                   TextSpan(
+                            //                     text:
+                            //                         '${price}',
+                            //                     style: TextStyle(
+                            //                       color: Colors.red,
+                            //                       fontWeight: FontWeight.bold,
+                            //                       fontSize: 25,
+                            //                     ),
+                            //                   ),
+                            //                 ],
+                            //               ),
+                            //             ),
+                            //           ),
+                            //         ),
+                            //         Container(
+                            //           height: 25,
+                            //           child: Align(
+                            //               alignment: Alignment.centerLeft,
+                            //               child: Text(
+                            //                 '${chooseSizeStr.length > 0 ? chooseSizeStr :''}',
+                            //                 style:
+                            //                     TextStyle(color: Colors.grey),
+                            //                 overflow: TextOverflow.ellipsis,
+                            //               )
+                            //               ),
+                            //         ),
+                            //       ],
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       )
@@ -770,78 +781,78 @@ class _GoodsDetail extends State<GoodsDetail> {
                   height: Rem.getPxToRem(80),
                   child: Row(
                     children: <Widget>[
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(
-                            Rem.getPxToRem(20),
-                            0,
-                            Rem.getPxToRem(10),
-                            0,
-                          ),
-                          child: GestureDetector(
-                            onTap: (){
-                              AddCart(goodsMsgs["coffee"]['uuid'], spec);
-                            },
-                            child: Center(
-                                  child: Container(
-                                    child: Center(
-                                      child: Text(
-                                        '加入购物车',
-                                      style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(Rem.getPxToRem(80)),
-                                ),
-                              ),
-                            ),
-                          ),
-                          )
+                      // Expanded(
+                      //   child: Container(
+                      //     padding: EdgeInsets.fromLTRB(
+                      //       Rem.getPxToRem(20),
+                      //       0,
+                      //       Rem.getPxToRem(10),
+                      //       0,
+                      //     ),
+                      //     child: GestureDetector(
+                      //       onTap: (){
+                      //         AddCart(goodsMsgs["coffee"]['uuid'], chooseSizeStr);
+                      //       },
+                      //       child: Center(
+                      //             child: Container(
+                      //               child: Center(
+                      //                 child: Text(
+                      //                   '加入购物车',
+                      //                 style: TextStyle(
+                      //                 color: Colors.white,
+                      //                 fontWeight: FontWeight.bold,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         decoration: BoxDecoration(
+                      //           color: Colors.red,
+                      //           borderRadius: BorderRadius.all(
+                      //             Radius.circular(Rem.getPxToRem(80)),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     )
 
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Router.push('/cofirmOrder', context);
-                          },
-                          child:Container(
-                          padding: EdgeInsets.fromLTRB(
-                            Rem.getPxToRem(10),
-                            0,
-                            Rem.getPxToRem(20),
-                            0,
-                          ),
-                          child: Center(
-                            child: Container(
-                              child: Center(
-                                child: Text(
-                                  '立即购买',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              width: double.infinity,
-                              height: double.infinity,
-                              decoration: BoxDecoration(
-                                color: Colors.orange,
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(Rem.getPxToRem(80)),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        )
+                      //   ),
+                      // ),
+                      // Expanded(
+                      //   child: GestureDetector(
+                      //     onTap: () {
+                      //       Router.push('/cofirmOrder', context);
+                      //     },
+                      //     child:Container(
+                      //     padding: EdgeInsets.fromLTRB(
+                      //       Rem.getPxToRem(10),
+                      //       0,
+                      //       Rem.getPxToRem(20),
+                      //       0,
+                      //     ),
+                      //     child: Center(
+                      //       child: Container(
+                      //         child: Center(
+                      //           child: Text(
+                      //             '立即购买',
+                      //             style: TextStyle(
+                      //               color: Colors.white,
+                      //               fontWeight: FontWeight.bold,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         width: double.infinity,
+                      //         height: double.infinity,
+                      //         decoration: BoxDecoration(
+                      //           color: Colors.orange,
+                      //           borderRadius: BorderRadius.all(
+                      //             Radius.circular(Rem.getPxToRem(80)),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      //   )
                         
-                      )
+                      // )
                     ],
                   ),
                 )
@@ -933,12 +944,13 @@ class _GoodsDetail extends State<GoodsDetail> {
             onTap: () {
               chooseSizeIndex[i] = j;
               setstate1(() {});
-              Map data = getSizeMsgByIndex(chooseSizeIndex);
+              getSizeMsgByIndex(chooseSizeIndex);
               setState(() {
-                chooseSizeIndex = chooseSizeIndex;
-                chooseSizeStr = data['chooseSizeStr'];
-                price = data['price'];
-                spec += specificationList[i]['coffee_spec_detail'][j]['value'] + ';';
+                // chooseSizeStr = chooseSizeStr;
+                // chooseSizeIndex = chooseSizeIndex;
+                // price = price;
+                //chooseSizeStr = data['chooseSizeStr'];
+                //price = data['price'];
                 // goodsNumber = 0;
                 // goodsMax = data['goodsStockPrice']['goods_number'];
                 //goodsStockPrice = data['goodsStockPrice'];
@@ -997,16 +1009,26 @@ class _GoodsDetail extends State<GoodsDetail> {
       'id': sizeIdList,
       'coffeeId': goodsMsgs['coffee']['uuid']
     };
-    var response = await getCoffeeSpecValue(data);
+    var response = await getSpecValue(data);
+    // print(response['data']['price']);
+    setState(() {
+      chooseSizeIndex = chooseSizeIndex;
+      chooseSizeStr = sizeStrList.join('、');
+      price = response['data']['price'];
+    });
     // Map goodsStockAndPrice =
     //     getGoodsMsgById(goodsMsgs['productList'], sizeIdList.join('_'));
-    return {
-      'chooseSizeStr': sizeStrList.join('、'),
-      'price': response['data']['price']
-      // 'goodsStockPrice': goodsStockAndPrice,
-    };
+    // return {
+    //   'chooseSizeStr': sizeStrList.join('、'),
+    //   'price': response['data']['price']
+    //   // 'goodsStockPrice': goodsStockAndPrice,
+    // };
   }
 
+  Future getSpecValue(data) async {
+    var response = await getCoffeeSpecValue(data);
+    return response;
+  }
   // 获取某规格的商品信息
   // getGoodsMsgById(List productList, String id) {
   //   for (int i = 0; i < productList.length; i++) {

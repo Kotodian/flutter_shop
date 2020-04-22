@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_shop/config/web.config.dart';
 import 'package:flutter_shop/utils/cache.dart';
 import 'package:flutter_shop/utils/httpUtils.dart';
-
+// 获得客户的购物车
 Future getCartList() async {
   var url = webApi['cart'];
   final sq = await SpUtil.getInstance();
@@ -23,8 +23,8 @@ Future getCartList() async {
     print(e);
   }
 }
-
-Future AddCart(coffeeId,spec) async {
+// 加入购物车
+Future AddCart(coffeeId,spec,value) async {
   var url = webApi['addCart'];
   final sq = await SpUtil.getInstance();
   var token = sq.getString('token');
@@ -32,7 +32,8 @@ Future AddCart(coffeeId,spec) async {
   var data = {
     "coffee_id": coffeeId,
     "user_id": userId,
-    "spec": spec
+    "spec": spec,
+    "value": value
   };
   try {
     var response = HttpUtil().postToken(url, token,data: jsonEncode(data));
@@ -42,14 +43,15 @@ Future AddCart(coffeeId,spec) async {
   }
 }
 
-Future ReduceCart(coffeeId) async {
+Future ReduceCart(coffeeId,spec) async {
   var url = webApi['reduceCart'];
   final sq = await SpUtil.getInstance();
   var token = sq.getString('token');
   var userId = sq.getString('userId');
   var data = {
     "coffee_id": coffeeId,
-    "user_id": userId
+    "user_id": userId,
+    "spec": spec
   };
   try {
     var response = HttpUtil().postToken(url, token,data: data);

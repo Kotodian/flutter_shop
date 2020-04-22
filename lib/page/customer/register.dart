@@ -21,6 +21,7 @@ bool  isButtonEnable=true;      //按钮状态  是否可点击
 String buttonText='发送验证码';   //初始文本
 int count=60;                     //初始倒计时时间
 Timer timer;                       //倒计时的计时器
+String phone;
 TextEditingController mController=TextEditingController();
 
 GlobalKey _formKey = new GlobalKey<FormState>();
@@ -40,11 +41,17 @@ GlobalKey _formKey = new GlobalKey<FormState>();
     }
   }
     void _buttonClickListen(){
-    setState(() {
-      if(isButtonEnable){         //当按钮可点击时
+    setState(() async{
+      if(isButtonEnable){    
+        var data = {
+          "phone": _unameController.text
+        };     //当按钮可点击时
+        var res = await getPhoneCaptcha(data);
+        phone = res['data']['captcha'];
+
         isButtonEnable=false;   //按钮状态标记
         _initTimer();
- 
+
         return null;            //返回null按钮禁止点击
       }else{                    //当按钮不可点击时
 //        debugPrint('false');
@@ -182,7 +189,9 @@ GlobalKey _formKey = new GlobalKey<FormState>();
                         validator: (v) {
                           if(v.trim().length == 0) {
                             return '验证码不能为空';
-                          }else {
+                          }else if(v != phone) {
+                            return '验证码错误';
+                          } else {
                             return null;
                           }
                         },

@@ -169,10 +169,7 @@ class OrderMapState extends State<OrderMap> {
                   margin: EdgeInsets.only(right: 10.0),
                   child: InkWell(
                     onTap: () {
-                      Router.push('/addMap', context)
-                          .then((onValue) {
-                            getUserAddress();
-                      });
+                      Router.push('/addMap', context);
                     },
                     child: Text(
                       '新增地址',

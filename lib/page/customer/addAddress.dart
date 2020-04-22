@@ -42,6 +42,9 @@ class AddMapState extends State<AddMap> {
 
   @override
   void initState() {
+    setState(() {
+      isDefault = false;
+    });
     super.initState();
   }
 
@@ -118,15 +121,15 @@ class AddMapState extends State<AddMap> {
             );
     });  
     var resultData = await addAddress(data);
-      if (resultData['data']['success']){
+      if (resultData['success']){
         Fluttertoast.showToast(
         msg: "新增成功",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
+        timeInSecForIosWeb: 2,
         textColor: Colors.black
       );
-      Navigator.of(context).pop();
+      Router.pop(context);
       } else{
         Fluttertoast.showToast(
         msg: "新增失败",
@@ -135,7 +138,7 @@ class AddMapState extends State<AddMap> {
         timeInSecForIosWeb: 1,
         textColor: Colors.black
       );
-      Navigator.of(context).pop();
+      Router.pop(context);
     }
 
   }

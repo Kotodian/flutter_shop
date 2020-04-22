@@ -18,7 +18,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    tabController = TabController(vsync: this, length: 5)..addListener((){
+    tabController = TabController(vsync: this, length: 4)..addListener((){
       if(mounted) {
         setState(() {
           currentIndex = tabController.index;
@@ -48,9 +48,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
         children: <Widget>[
           HomePage(),
           Sort(),
-          Container(
-            color: colors[2]
-          ),
           CartPage(),
           Mine()
         ]),

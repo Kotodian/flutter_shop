@@ -138,12 +138,11 @@ Widget orderListUI(OrderList order, BuildContext context) {
             height: 20.0,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            //mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              order.orderType == 1 || order.orderType == 2
+                order.orderType == 0
                   ? InkWell(
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      onTap: () {},
                       child: Container(
                         height: 36.0,
                         width: 82.0,
@@ -153,12 +152,49 @@ Widget orderListUI(OrderList order, BuildContext context) {
                           border: Border.all(color: Colors.grey[400]),
                         ),
                         child: Center(
-                          child: Text('取消订单'),
+                          child: Row(
+                            children: <Widget>[
+                             
+                            ],
+                          )
                         ),
                       ),
                     )
                   : Container(),
               order.orderType == 1
+                  ? InkWell(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      child: Container(
+                        height: 36.0,
+                        width: 82.0,
+                        margin: EdgeInsets.only(left: 10.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          border: Border.all(color: Colors.grey[400]),
+                        ),
+                        child: Center(
+                          child: Row(
+                            children: <Widget>[
+                              InkWell(
+                                // TODO:去支付
+                                onTap: (){},
+                                child: Text(
+                                  '去支付'
+                                )
+                              ),
+                              InkWell(
+                                // TODO:取消订单
+                                child: Text(
+                                  '取消订单'
+                                ),
+                              )
+                            ],
+                          )
+                        ),
+                      ),
+                    )
+                  : Container(),
+              order.orderType == 2
                   ? InkWell(
                       borderRadius: BorderRadius.all(Radius.circular(20.0)),
                       onTap: () {},
@@ -174,7 +210,7 @@ Widget orderListUI(OrderList order, BuildContext context) {
                         ),
                         child: Center(
                           child: Text(
-                            '继续支付',
+                            '已完成',
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -196,7 +232,7 @@ Widget orderListUI(OrderList order, BuildContext context) {
                               Border.all(color: Theme.of(context).primaryColor),
                         ),
                         child: Center(
-                          child: Text('确认收货',
+                          child: Text('已取消',
                               style: TextStyle(color: Colors.white)),
                         ),
                       ),
@@ -262,7 +298,9 @@ class OrderListPageState extends State<OrderListPage> {
 
   final List<Map<String, dynamic>> _tabValues = [
     {'title': '全部','route': '0'},
-    {'title': '待付款','route': '1'}
+    {'title': '待付款','route': '1'},
+    {'title': '已完成','route': '2'},
+    {'title': '已取消','route': '3'}
   ];
 
   @override
