@@ -45,7 +45,6 @@ Future getOrderList(int page, int limit, int type) async {
     }
 
 }
-
 // 订单状态
 String orderStatus(int status) {
   if (status == 1) {
@@ -138,7 +137,7 @@ Widget orderListUI(OrderList order, BuildContext context) {
             height: 20.0,
           ),
           Row(
-            //mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
                 order.orderType == 0
                   ? InkWell(
@@ -172,24 +171,8 @@ Widget orderListUI(OrderList order, BuildContext context) {
                           borderRadius: BorderRadius.all(Radius.circular(20.0)),
                           border: Border.all(color: Colors.grey[400]),
                         ),
-                        child: Center(
-                          child: Row(
-                            children: <Widget>[
-                              InkWell(
-                                // TODO:去支付
-                                onTap: (){},
-                                child: Text(
-                                  '去支付'
-                                )
-                              ),
-                              InkWell(
-                                // TODO:取消订单
-                                child: Text(
-                                  '取消订单'
-                                ),
-                              )
-                            ],
-                          )
+                        child:  Center(
+                          child: Text('未付款'),
                         ),
                       ),
                     )

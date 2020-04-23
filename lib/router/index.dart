@@ -69,13 +69,13 @@ class Router {
       Navigator.pushNamed(context, routeName, arguments: parmas)
           .then((onValue) {
         if (callBack != null) {
-          callBack();
+          callBack(onValue);
         }
       });
     } else {
       Navigator.pushNamed(context, routeName).then((onValue) {
         if (callBack != null) {
-          callBack();
+          callBack(onValue);
         }
       });
     }

@@ -385,7 +385,7 @@ class OrderDetailPageState extends State<OrderDetailPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-             orderDetail.orderList.orderType == 1 || orderDetail.orderList.orderType == 2? InkWell(
+             orderDetail.orderList.orderType == 1 ? InkWell(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 onTap: () {},
                 child: Container(
@@ -397,7 +397,7 @@ class OrderDetailPageState extends State<OrderDetailPage> {
                     border: Border.all(color: Colors.grey[400]),
                   ),
                   child: Center(
-                    child: Text('取消订单'),
+                    child: Text('未付款'),
                   ),
                 ),
               ): Container(),
@@ -422,7 +422,7 @@ class OrderDetailPageState extends State<OrderDetailPage> {
                   ),
                 ),
               ): Container(),
-              orderDetail.orderList.orderType == 3?
+              orderDetail.orderList.orderType == 2?
               InkWell(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 onTap: () {},
@@ -435,12 +435,9 @@ class OrderDetailPageState extends State<OrderDetailPage> {
                     borderRadius: BorderRadius.all(Radius.circular(20.0)),
                     border: Border.all(color: Theme.of(context).primaryColor),
                   ),
-                  child: Center(
-                    child: Text('确认收货', style: TextStyle(color: Colors.white)),
-                  ),
                 ),
               ): Container(),
-              orderDetail.orderList.orderType == 5?
+              orderDetail.orderList.orderType == 3?
               InkWell(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 onTap: () {},
@@ -453,7 +450,7 @@ class OrderDetailPageState extends State<OrderDetailPage> {
                     border: Border.all(color: Colors.grey[400]),
                   ),
                   child: Center(
-                    child: Text('去评价'),
+                    child: Text('继续支付'),
                   ),
                 ),
               ): Container()

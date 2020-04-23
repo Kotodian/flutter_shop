@@ -49,7 +49,7 @@ class AddMapState extends State<AddMap> {
   }
 
   // 新增
-  add() async {
+  add(context) async {
     if(nameController.text == ''){
        Fluttertoast.showToast(
         msg: "请输入姓名",
@@ -307,7 +307,7 @@ class AddMapState extends State<AddMap> {
                 ),
                 InkWell(
                   onTap: () {
-                    add();
+                    add(context);
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width - 30,

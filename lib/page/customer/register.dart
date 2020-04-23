@@ -93,16 +93,6 @@ GlobalKey _formKey = new GlobalKey<FormState>();
         child: SafeArea(
             child: Column(
       children: <Widget>[
-        Container(
-          width: double.infinity,
-          color: Colors.white,
-          padding: EdgeInsets.fromLTRB(50, 50, 50, 40),
-          child: CachedNetworkImage(
-            imageUrl:
-                'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1586425648389&di=5ba3bf34d9ed22ce0762e4e0e8f422c9&imgtype=0&src=http%3A%2F%2Fimg01.jituwang.com%2F171205%2F256756-1G20519532362.jpg',
-                
-          ),
-        ),
         Expanded(
           child: Container(
             color: Colors.white,
@@ -150,7 +140,6 @@ GlobalKey _formKey = new GlobalKey<FormState>();
                           labelText: "别名",
                           hintText: "您的别名",
                           icon: Icon(Icons.person)),
-                      obscureText: true,
                       //校验别名
                       validator: (v) {
                         if (v.trim().length == 0) {
@@ -198,7 +187,6 @@ GlobalKey _formKey = new GlobalKey<FormState>();
                       ),),
                     ),
                     Container(
-                      width: 120,
                       child: FlatButton(
                         disabledColor: Colors.grey.withOpacity(0.1),     //按钮禁用时的颜色
                         disabledTextColor: Colors.white,                   //按钮禁用时的文本颜色
@@ -219,7 +207,7 @@ GlobalKey _formKey = new GlobalKey<FormState>();
                   
                   // 注册按钮
                   Padding(
-                    padding: const EdgeInsets.only(top: 28.0),
+                    padding: const EdgeInsets.only(top: 10.0),
                     child: Row(
                       children: <Widget>[
                         Expanded(

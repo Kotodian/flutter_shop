@@ -16,8 +16,6 @@ class Mine extends StatelessWidget {
   final List<Map<String, dynamic>> gridList = [
     {'name': '地址管理', 'icon': 'assets/images/address.png','route':'/orderMap'},
     {'name': '我的订单', 'icon': 'assets/images/order.png','route':'/orderList'},
-    {'name': '客服咨询', 'icon': 'assets/images/kefu.png','route':''},
-    {'name': '意见反馈', 'icon': 'assets/images/issure.png','route':''},
     {'name': '退出登录', 'icon': 'assets/images/logout.png','route':''}
   ];
   var username;

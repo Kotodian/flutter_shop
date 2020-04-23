@@ -107,10 +107,17 @@ class OrderMapState extends State<OrderMap> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          Text(
+                        GestureDetector(
+                          // TODO:选择该地址作为收货地址
+                          onTap: () {
+                            Navigator.of(context).pop(item);
+                          },
+                          child:Text(
                             item.consignee,
                             style: TextStyle(fontSize: 18.0),
-                          ),
+                          )
+                        ),
+
                           Container(
                             width: 30.0,
                           ),
@@ -139,8 +146,7 @@ class OrderMapState extends State<OrderMap> {
                           style: TextStyle(fontSize: 16.0, color: Colors.grey))
                     ],
                   ),
-                ),
-                Icon(Icons.edit)
+                )
               ],
             ),
           ),
@@ -169,7 +175,15 @@ class OrderMapState extends State<OrderMap> {
                   margin: EdgeInsets.only(right: 10.0),
                   child: InkWell(
                     onTap: () {
-                      Router.push('/addMap', context);
+                      List<Address> temp = [];
+                      Router.push('/addMap', context).then((data){
+                        data.forEach((item){
+                          temp.add(item);
+                        });
+                        setState(() {
+                          addressList = temp;
+                        });
+                      });
                     },
                     child: Text(
                       '新增地址',

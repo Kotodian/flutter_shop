@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
           return RestartWidget(
             child: MaterialApp(
               debugShowCheckedModeBanner: false,
-              theme: ThemeData(backgroundColor: Colors.transparent),
+              //theme: ThemeData(backgroundColor: Colors.transparent),
               // 监听路由跳转
               onGenerateRoute: (RouteSettings settings) {
                 return Router.run(settings);

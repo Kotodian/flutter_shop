@@ -27,8 +27,20 @@ Future getUserOrderDetail(data) async {
   }
 }
 
-Future AddUserOrder(data) async {
+Future addUserOrder(data) async {
   var url = webApi['addOrder'];
+  final sq = await SpUtil.getInstance();
+  var token = sq.getString('token');
+  try {
+    var response = await HttpUtil().postToken(url, token,data: data);
+    return response;
+  } catch (e) {
+    print(e);
+  }
+}
+
+Future orderSet(data) async {
+    var url = webApi['orderSet'];
   final sq = await SpUtil.getInstance();
   var token = sq.getString('token');
   try {

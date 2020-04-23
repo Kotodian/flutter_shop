@@ -6,6 +6,7 @@ import 'package:flutter_shop/method/cart.dart';
 import 'package:flutter_shop/method/order.dart';
 import 'package:flutter_shop/model/address.dart';
 import 'package:flutter_shop/model/cartInfo.dart';
+import 'package:flutter_shop/page/customer/address.dart';
 import 'package:flutter_shop/router/index.dart';
 import 'package:flutter_shop/utils/cache.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -63,13 +64,21 @@ Future getUserAddress() async {
 	"user_id": userId
   };
   var response = await getAddressList(data);
-  this.setState(() {
-    response['data']['addressList'].forEach((item){
-      addressList.add(Address.fromJson(item));
-      if(item['isDefault'] == 1) {
+  print(response);
+  response['data']['addressList'].forEach((item){
+  addressList.add(Address.fromJson(item));
+    if(item['isDefault'] == 1) {
+      setState(() {
+        print(currentAddress);
         currentAddress = Address.fromJson(item);
-      }
-    });
+      });
+    }
+    });  
+}
+
+changeCurrentAddress(onValue) {
+  setState(() {
+    currentAddress = onValue;
   });
 }
 // 获取用户购物车
@@ -218,9 +227,16 @@ Future getUserCart() async {
               Material(
                 child: InkWell(
                   onTap: () {
-                    Router.push("/orderMap",context).then((onValue){
-                      print(onValue);
+                    Router.push("/orderMap",context,null,(onValue){
+                      setState(() {
+                        currentAddress = onValue;
+                      });
                     });
+                    // Navigator.of(context).pushNamed('/oderMap').then((onValue){
+                    //   setState(() {
+                    //     currentAddress = onValue;
+                    //   });
+                    // });
                   },
                   child: Container(
                     color: Colors.white,
@@ -331,7 +347,7 @@ Future getUserCart() async {
             'orderType': 2,
             'phone': currentAddress.phone
           };
-           var response = await AddUserOrder(data);
+           var response = await addUserOrder(data);
             ToastUtils.showToast("支付成功");
             // TODO: 返回值 跳转到订单详情
             Router.push('/orderDetail', context);
@@ -339,24 +355,6 @@ Future getUserCart() async {
             },
             child: Text(
             '确认支付',
-            style: TextStyle(fontSize: 18.0, color: Colors.white),
-            ),
-            ),
-            GestureDetector(
-              onTap: () async{
-              var data = {
-            'cartList': cartList,
-            'consignee': currentAddress.consignee,
-            'spec_address': currentAddress.specAddress,
-            'orderType': 1,
-            'phone': currentAddress.phone
-          };
-            var response = await AddUserOrder(data);
-            ToastUtils.showToast("支付失败");
-            Router.push('/orderDetail', context,{'orderId': response['data']['order_id']});
-            },
-            child: Text(
-            '再想想',
             style: TextStyle(fontSize: 18.0, color: Colors.white),
             ),
             )

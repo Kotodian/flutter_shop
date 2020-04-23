@@ -59,7 +59,7 @@ class _GoodsDetail extends State<GoodsDetail> {
       'cartList': response['data']['cartList']
 
     };
-    await AddUserOrder(data);
+    await addUserOrder(data);
   }
   getInitData() async {
     String id = widget.arguments['uuid'];
@@ -247,7 +247,7 @@ class _GoodsDetail extends State<GoodsDetail> {
           Expanded(
             child: GestureDetector(
               onTap: () async{
-                  var res = await AddCart(goodsMsgs['coffee']['uuid'], chooseSizeStr,price); 
+                  var res = await addCart(goodsMsgs['coffee']['uuid'], chooseSizeStr,price); 
                   if(res['success']) {
                     ToastUtils.showToast("添加成功");
                   }else {

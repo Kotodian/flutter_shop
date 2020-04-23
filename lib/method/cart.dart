@@ -24,7 +24,7 @@ Future getCartList() async {
   }
 }
 // 加入购物车
-Future AddCart(coffeeId,spec,value) async {
+Future addCart(coffeeId,spec,value) async {
   var url = webApi['addCart'];
   final sq = await SpUtil.getInstance();
   var token = sq.getString('token');
@@ -43,7 +43,7 @@ Future AddCart(coffeeId,spec,value) async {
   }
 }
 
-Future ReduceCart(coffeeId,spec) async {
+Future reduceCart(coffeeId,spec) async {
   var url = webApi['reduceCart'];
   final sq = await SpUtil.getInstance();
   var token = sq.getString('token');

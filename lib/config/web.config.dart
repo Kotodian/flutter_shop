@@ -1,4 +1,4 @@
-var baseUrl = 'http://192.168.2.136:8888';
+var baseUrl = 'http://192.168.0.100:8888';
 var webApi = {
   'categoryList': baseUrl + '/base/coffeetype',
   'cusUpload': baseUrl + '/cus/upload',
@@ -18,5 +18,6 @@ var webApi = {
   'orderDetail': baseUrl + '/cus/orderDetail',
   'addOrder': baseUrl + '/cus/addOrder',
   'coffeeValue': baseUrl + '/cus/getprice',
-  'phone': baseUrl + '/base/phone'
+  'phone': baseUrl + '/base/phone',
+  'orderSet': baseUrl + '/cus/orderSet'
 };
