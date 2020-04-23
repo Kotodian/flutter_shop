@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_shop/method/order.dart';
 import 'package:flutter_shop/model/order.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_shop/page/order/orderList.dart';
+import 'package:flutter_shop/router/index.dart';
+import 'package:flutter_shop/utils/fluttertoast.dart';
 
 // 获取订单详情
 Future getOrderDetail(String id) async {
@@ -387,7 +390,17 @@ class OrderDetailPageState extends State<OrderDetailPage> {
             children: <Widget>[
              orderDetail.orderList.orderType == 1 ? InkWell(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                onTap: () {},
+                onTap: () async{
+                  var data = {'orderId': orderDetail.orderList.orderId,'orderType': 2};
+                  var response = await orderSet(data);
+                  var temp = await getOrderList(1, 10, 0);
+                  if(response['successs']) {
+                    ToastUtils.showToast("支付成功");
+                  } else {
+                    ToastUtils.showToast("支付失败");
+                  }
+                  Navigator.of(context).pop(temp['data']);
+                },
                 child: Container(
                   height: 36.0,
                   width: 82.0,
@@ -397,14 +410,25 @@ class OrderDetailPageState extends State<OrderDetailPage> {
                     border: Border.all(color: Colors.grey[400]),
                   ),
                   child: Center(
-                    child: Text('未付款'),
+                    child: Text('继续支付'),
                   ),
                 ),
               ): Container(),
               orderDetail.orderList.orderType == 1?
               InkWell(
                 borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                onTap: () {},
+                onTap: () async{
+                  var data = {'orderId': orderDetail.orderList.orderId,'orderType': 3};
+                  var response = await orderSet(data);
+                  var temp = await getOrderList(1, 10, 0);
+                  if(response['successs']) {
+                    ToastUtils.showToast("支付成功");
+                  } else {
+                    ToastUtils.showToast("支付失败");
+                  }
+                  Navigator.of(context).pop(temp['data']);
+
+                },
                 child: Container(
                   height: 36.0,
                   width: 82.0,
@@ -416,7 +440,7 @@ class OrderDetailPageState extends State<OrderDetailPage> {
                   ),
                   child: Center(
                     child: Text(
-                      '继续支付',
+                      '取消订单',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),

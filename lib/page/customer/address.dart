@@ -176,9 +176,9 @@ class OrderMapState extends State<OrderMap> {
                   child: InkWell(
                     onTap: () {
                       List<Address> temp = [];
-                      Router.push('/addMap', context).then((data){
+                      Router.push('/addMap', context,null,(data){
                         data.forEach((item){
-                          temp.add(item);
+                         temp.add(Address.fromJson(item));
                         });
                         setState(() {
                           addressList = temp;

@@ -57,198 +57,7 @@ String orderStatus(int status) {
 }
 
 // 订单列表布局
-Widget orderListUI(OrderList order, BuildContext context) {
-  List<Widget> child = [];
-  for (var i = 0; i < order.orderDetail.length; i++) {
-    var item = order.orderDetail[i];
-    child.add(Container(
-      margin: EdgeInsets.all(10.0),
-      child: Column(
-        children: <Widget>[
-          InkWell(
-              onTap: () {
-                Router.push("/orderDetail", context, {'orderId': order.orderId});
-              },
-              child: Row(
-                children: <Widget>[
-                  CachedNetworkImage(
-                    imageUrl: item.coffee.img,
-                    width: 100.0,
-                    height: 100.0,
-                    placeholder: (context, url) => new Icon(
-                      Icons.image,
-                      color: Colors.grey[300],
-                      size: 100.0,
-                    ),
-                    errorWidget: (context, url, error) => new Icon(
-                      Icons.image,
-                      color: Colors.grey[300],
-                      size: 100.0,
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(left: 10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            item.coffee.name,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                          // Text(
-                          //   order.productSpecsList[i].id > 0
-                          //       ? order.productSpecsList[i].specs
-                          //       : '',
-                          //   maxLines: 2,
-                          //   overflow: TextOverflow.ellipsis,
-                          //   style: TextStyle(
-                          //       color: Colors.grey[400], fontSize: 14.0),
-                          // ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
 
-                                '￥${item.value.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                    color: Colors.red, fontSize: 22.0),
-                              ),
-                              Text(
-                                item.count > 0
-                                    ? 'x${item.count}'
-                                    : '',
-                                style: TextStyle(
-                                    color: Colors.grey[400], fontSize: 14.0),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              )),
-          Container(
-            height: 20.0,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-                order.orderType == 0
-                  ? InkWell(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      child: Container(
-                        height: 36.0,
-                        width: 82.0,
-                        margin: EdgeInsets.only(left: 10.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          border: Border.all(color: Colors.grey[400]),
-                        ),
-                        child: Center(
-                          child: Row(
-                            children: <Widget>[
-                             
-                            ],
-                          )
-                        ),
-                      ),
-                    )
-                  : Container(),
-              order.orderType == 1
-                  ? InkWell(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      child: Container(
-                        height: 36.0,
-                        width: 82.0,
-                        margin: EdgeInsets.only(left: 10.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          border: Border.all(color: Colors.grey[400]),
-                        ),
-                        child:  Center(
-                          child: Text('未付款'),
-                        ),
-                      ),
-                    )
-                  : Container(),
-              order.orderType == 2
-                  ? InkWell(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      onTap: () {},
-                      child: Container(
-                        height: 36.0,
-                        width: 82.0,
-                        margin: EdgeInsets.only(left: 10.0),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          border:
-                              Border.all(color: Theme.of(context).primaryColor),
-                        ),
-                        child: Center(
-                          child: Text(
-                            '已完成',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                      ),
-                    )
-                  : Container(),
-              order.orderType == 3
-                  ? InkWell(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      onTap: () {},
-                      child: Container(
-                        height: 36.0,
-                        width: 82.0,
-                        margin: EdgeInsets.only(left: 10.0),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          border:
-                              Border.all(color: Theme.of(context).primaryColor),
-                        ),
-                        child: Center(
-                          child: Text('已取消',
-                              style: TextStyle(color: Colors.white)),
-                        ),
-                      ),
-                    )
-                  : Container(),
-              order.orderType == 5
-                  ? InkWell(
-                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                      onTap: () {},
-                      child: Container(
-                        height: 36.0,
-                        width: 82.0,
-                        margin: EdgeInsets.only(left: 10.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
-                          border: Border.all(color: Colors.grey[400]),
-                        ),
-                        child: Center(
-                          child: Text('去评价'),
-                        ),
-                      ),
-                    )
-                  : Container()
-            ],
-          )
-        ],
-      ),
-    ));
-  }
-  Widget list = Column(children: child);
-
-  return list;
-}
 
 /// 质感设计样式
 class OrderListPage extends StatefulWidget {
@@ -512,4 +321,201 @@ class OrderListPageState extends State<OrderListPage> {
           }).toList(),
         ));
   }
+  Widget orderListUI(OrderList order, BuildContext context) {
+  List<Widget> child = [];
+  for (var i = 0; i < order.orderDetail.length; i++) {
+    var item = order.orderDetail[i];
+    child.add(Container(
+      margin: EdgeInsets.all(10.0),
+      child: Column(
+        children: <Widget>[
+          InkWell(
+              onTap: () {
+                Router.push("/orderDetail", context, {'orderId': order.orderId},(data){
+                  var resultData = OrderListData.fromJson(data);
+                  setState(() {
+                    orderList = resultData.orderList;
+                  });
+                });
+              },
+              child: Row(
+                children: <Widget>[
+                  CachedNetworkImage(
+                    imageUrl: item.coffee.img,
+                    width: 100.0,
+                    height: 100.0,
+                    placeholder: (context, url) => new Icon(
+                      Icons.image,
+                      color: Colors.grey[300],
+                      size: 100.0,
+                    ),
+                    errorWidget: (context, url, error) => new Icon(
+                      Icons.image,
+                      color: Colors.grey[300],
+                      size: 100.0,
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(left: 10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            item.coffee.name,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                          // Text(
+                          //   order.productSpecsList[i].id > 0
+                          //       ? order.productSpecsList[i].specs
+                          //       : '',
+                          //   maxLines: 2,
+                          //   overflow: TextOverflow.ellipsis,
+                          //   style: TextStyle(
+                          //       color: Colors.grey[400], fontSize: 14.0),
+                          // ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+
+                                '￥${item.value.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                    color: Colors.red, fontSize: 22.0),
+                              ),
+                              Text(
+                                item.count > 0
+                                    ? 'x${item.count}'
+                                    : '',
+                                style: TextStyle(
+                                    color: Colors.grey[400], fontSize: 14.0),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              )),
+          Container(
+            height: 20.0,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+                order.orderType == 0
+                  ? InkWell(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      child: Container(
+                        height: 36.0,
+                        width: 82.0,
+                        margin: EdgeInsets.only(left: 10.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          border: Border.all(color: Colors.grey[400]),
+                        ),
+                        child: Center(
+                          child: Row(
+                            children: <Widget>[
+                             
+                            ],
+                          )
+                        ),
+                      ),
+                    )
+                  : Container(),
+              order.orderType == 1
+                  ? InkWell(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      child: Container(
+                        height: 36.0,
+                        width: 82.0,
+                        margin: EdgeInsets.only(left: 10.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          border: Border.all(color: Colors.grey[400]),
+                        ),
+                        child:  Center(
+                          child: Text('未付款'),
+                        ),
+                      ),
+                    )
+                  : Container(),
+              order.orderType == 2
+                  ? InkWell(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      onTap: () {},
+                      child: Container(
+                        height: 36.0,
+                        width: 82.0,
+                        margin: EdgeInsets.only(left: 10.0),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          border:
+                              Border.all(color: Theme.of(context).primaryColor),
+                        ),
+                        child: Center(
+                          child: Text(
+                            '已完成',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(),
+              order.orderType == 3
+                  ? InkWell(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      onTap: () {},
+                      child: Container(
+                        height: 36.0,
+                        width: 82.0,
+                        margin: EdgeInsets.only(left: 10.0),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          border:
+                              Border.all(color: Theme.of(context).primaryColor),
+                        ),
+                        child: Center(
+                          child: Text('已取消',
+                              style: TextStyle(color: Colors.white)),
+                        ),
+                      ),
+                    )
+                  : Container(),
+              order.orderType == 5
+                  ? InkWell(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                      onTap: () {},
+                      child: Container(
+                        height: 36.0,
+                        width: 82.0,
+                        margin: EdgeInsets.only(left: 10.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          border: Border.all(color: Colors.grey[400]),
+                        ),
+                        child: Center(
+                          child: Text('去评价'),
+                        ),
+                      ),
+                    )
+                  : Container()
+            ],
+          )
+        ],
+      ),
+    ));
+  }
+  Widget list = Column(children: child);
+
+  return list;
+}
 }

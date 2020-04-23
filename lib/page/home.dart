@@ -41,7 +41,9 @@ class _HomePageState extends State<HomePage> {
     } else {
       var sliversList = [
         buildSwiper(),
-        buildChannel()
+        buildChannel(),
+        buildTitle('精美咖啡',false),
+        buildCoffee()
       ];
     return SafeArea(
       child: CustomScrollView(
@@ -101,7 +103,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              // TODO: 修改
               '/catalog',
               context,
               {
@@ -110,6 +111,41 @@ class _HomePageState extends State<HomePage> {
         },
         childCount: 5,
       ),
+    );
+  }
+  Widget buildCoffee() {
+    return SliverList(
+       delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+        return Container(
+          child: CachedNetworkImage(width: 350,
+              imageUrl: 'https://tp.85814.com/d/file/shutu/2020-03/1584087956zN6I.jpg!800')
+        );
+      }, childCount:1),
+    );
+  }
+    SliverList buildTitle(String title, [bool isBorder = true]) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+        return Container(
+          height: Rem.getPxToRem(100),
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: isBorder
+                  ? Border(
+                      bottom: BorderSide(color: Colors.grey[200], width: .5))
+                  : null),
+          margin: EdgeInsets.only(top: Rem.getPxToRem(20)),
+          child: Center(
+            child: Text(
+              title,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  wordSpacing: 2,
+                  fontSize: Rem.getPxToRem(30)),
+            ),
+          ),
+        );
+      }, childCount: 1),
     );
   }
 }

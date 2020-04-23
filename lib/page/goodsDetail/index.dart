@@ -477,7 +477,6 @@ class _GoodsDetail extends State<GoodsDetail> {
             ),
           ),
           Text(
-            // TODO: 商品价格
             '￥${price}',
             style: TextStyle(
               color: Colors.red,

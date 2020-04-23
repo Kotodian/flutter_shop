@@ -6,7 +6,6 @@ import 'package:flutter_shop/method/cart.dart';
 import 'package:flutter_shop/method/order.dart';
 import 'package:flutter_shop/model/address.dart';
 import 'package:flutter_shop/model/cartInfo.dart';
-import 'package:flutter_shop/page/customer/address.dart';
 import 'package:flutter_shop/router/index.dart';
 import 'package:flutter_shop/utils/cache.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -349,7 +348,6 @@ Future getUserCart() async {
           };
            var response = await addUserOrder(data);
             ToastUtils.showToast("支付成功");
-            // TODO: 返回值 跳转到订单详情
             Router.push('/orderDetail', context);
             Router.push('/orderDetail', context,{'orderId': response['data']['order_id']});
             },

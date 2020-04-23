@@ -4,6 +4,7 @@ import 'package:flutter_shop/method/address.dart';
 import 'package:flutter_shop/router/index.dart';
 import 'package:flutter_shop/utils/cache.dart';
 import 'package:city_pickers/city_pickers.dart';
+import 'package:flutter_shop/utils/fluttertoast.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../widget/loading_widget.dart';
 
@@ -112,33 +113,22 @@ class AddMapState extends State<AddMap> {
         'province': province,
         'userId': userId
       };
-    showDialog<Null>(
-        context: context, //BuildContext对象
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-            return new LoadingDialog( //调用对话框
-                text: '提交中...',
-            );
-    });  
     var resultData = await addAddress(data);
+    var addressList = {
+    "pageInfo": {
+		"page": 1,
+		"pageSize": 999
+	  },
+	  "user_id": userId
+    };
+  var response = await getAddressList(addressList);
       if (resultData['success']){
-        Fluttertoast.showToast(
-        msg: "新增成功",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 2,
-        textColor: Colors.black
-      );
-      Router.pop(context);
+        ToastUtils.showToast("添加成功");
+      // print(response);
+      Navigator.of(context).pop(response['data']['addressList']);
       } else{
-        Fluttertoast.showToast(
-        msg: "新增失败",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        textColor: Colors.black
-      );
-      Router.pop(context);
+      ToastUtils.showToast("添加失败");
+      Navigator.of(context).pop(response['data']['addressList']);
     }
 
   }

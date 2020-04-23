@@ -3,11 +3,9 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/method/cart.dart';
 import 'package:flutter_shop/model/cartInfo.dart';
-import 'package:flutter_shop/model/index.dart';
 import 'package:flutter_shop/router/index.dart';
 import 'package:flutter_shop/utils/cache.dart';
 import 'package:flutter_shop/utils/fluttertoast.dart';
-import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 
@@ -52,6 +50,7 @@ class CartPageState extends State<CartPage> {
     });
   }
 }else {
+  ToastUtils.showToast("请先登录");
   Router.push('/login', context);
 }
 }
